@@ -2,26 +2,44 @@
 using System.Collections;
 
 public class CraneManager : MonoBehaviour {
-	public Transform Crane;
-	float rotationSpeed=100f;
-	void Start(){
-		StartCoroutine(rotation (45f));
+
+	private static CraneManager instance;
+	public static CraneManager Instance{ get { return instance; } }
+	void Awake(){
+		if (instance == null)
+			instance = this;
+		else if (instance != this)
+			Destroy (gameObject);
+		DontDestroyOnLoad (gameObject);
 	}
 
-	IEnumerator rotation(float rotation){
-		float rotationTime = rotation / 20f;//How much time will it take to dim the light
+	public Transform Crane;
+	float rotationSpeed=0.5f;
+	void Start(){
+	}
+	/*
+	public IEnumerator rotation(float rotation){
+		float rotationTime = rotation / 20f; //How much time will it take to rotate the crane
 		float currentTime = 0.0f;
 		bool done = false;
 		float angle = Crane.rotation.eulerAngles.y + rotation;
-		while (!done) {
+		while () {
 			float percent = currentTime / rotationTime;
 			if (percent >= 1.0f)
 			{
 				percent = 1;
 				done = true;
 			}
-			Crane.rotation = Quaternion.Lerp(Crane.rotation,Quaternion.Euler (Crane.rotation.eulerAngles.x, angle, Crane.rotation.eulerAngles.z),percent );
+			Crane.rotation = Quaternion.Euler (Crane.rotation.eulerAngles.x, angle, Crane.rotation.eulerAngles.z),percent );
 			currentTime += 0.01f;
+			yield return new WaitForSeconds(0.01f);
+		}
+	}*/
+
+	public IEnumerator rotation(float rotation){
+		while (rotation>0) {
+			Crane.rotation = Quaternion.Euler (Crane.rotation.eulerAngles.x, Crane.rotation.eulerAngles.y+rotationSpeed, Crane.rotation.eulerAngles.z);
+			rotation -= rotationSpeed;
 			yield return new WaitForSeconds(0.01f);
 		}
 	}
