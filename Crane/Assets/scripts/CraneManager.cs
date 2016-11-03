@@ -14,7 +14,7 @@ public class CraneManager : MonoBehaviour {
 	}
 
 	public Transform Crane;
-	float rotationSpeed=0.5f;
+
 	void Start(){
 	}
 	/*
@@ -37,10 +37,21 @@ public class CraneManager : MonoBehaviour {
 	}*/
 
 	public IEnumerator rotation(float rotation){
-		while (rotation>0) {
-			Crane.rotation = Quaternion.Euler (Crane.rotation.eulerAngles.x, Crane.rotation.eulerAngles.y+rotationSpeed, Crane.rotation.eulerAngles.z);
-			rotation -= rotationSpeed;
-			yield return new WaitForSeconds(0.01f);
+		if (rotation > 0) {
+			float rotationSpeed=0.5f;
+			while (rotation > 0) {
+				Crane.rotation = Quaternion.Euler (Crane.rotation.eulerAngles.x, Crane.rotation.eulerAngles.y + rotationSpeed, Crane.rotation.eulerAngles.z);
+				rotation -= rotationSpeed;
+				yield return new WaitForSeconds (0.01f);
+			}
+		} else {
+			float rotationSpeed=-0.5f;
+			while (rotation < 0) {
+				Crane.rotation = Quaternion.Euler (Crane.rotation.eulerAngles.x, Crane.rotation.eulerAngles.y + rotationSpeed, Crane.rotation.eulerAngles.z);
+				rotation -= rotationSpeed;
+				yield return new WaitForSeconds (0.01f);
+			}
 		}
+			
 	}
 }

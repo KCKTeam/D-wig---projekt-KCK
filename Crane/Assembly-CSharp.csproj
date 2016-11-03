@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\scripts\CraneManager.cs" />
      <Compile Include="Assets\scripts\GetText.cs" />
+     <Compile Include="Assets\scripts\objectProperties.cs" />
      <Compile Include="Assets\scripts\rotate.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
