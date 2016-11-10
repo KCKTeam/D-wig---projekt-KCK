@@ -8,21 +8,20 @@ public class GetText : MonoBehaviour {
 	
 	//tablica przechowująca wszystkie obiekty ze sceny
 	public GameObject [] obiekty;
-
+	string[] substrings;
 	//słowa kluczowe
 	string [] kolory = {"ziel","niebi","czerw", "fiolet", "żółt", "biał", "czarn"};
-	string [] rodzaje = {"becz", "kontene", "skrzyn","samoch", "karto", "drzwia", "okn", "pił" };
+	string [] rodzaje = {"becz", "kontene", "skrzyn","samoch", "karto", "drzwi", "okn", "pił" };
 	string [] czas_pod = {"podnieś", "unieś"};
 	string [] czas_kladz = {"opuść", "postaw","odłóż", "połóż"};
 	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
+
+
 
 	InputField wejscie;
 	void Start(){
 		//wczytanie wszystkich obiektów do tablicy
 		obiekty = GameObject.FindGameObjectsWithTag ("obiekt");
-		for (int i = 0; i < obiekty.Length; i++) {
-			Debug.Log (obiekty [i].GetComponent<objectProperties> ().rodzaj);
-		}
 
 		wejscie = GetComponent<InputField> ();
 	}
@@ -37,11 +36,12 @@ public class GetText : MonoBehaviour {
 	void searchOrder(string pobrany_tekst){
 		bool obrot = false, czy_liczba = false;
 		bool czy_podnoszenie = false, czy_kladzenie = false;
+		int index_podnoszenia = -1, index_kladzenia = -1;
 		string kierunek = "";
 		float kat = 0;
 		//zmienne do przetworzenia tekstu
 		char delimiter = ' ';
-		string[] substrings = pobrany_tekst.ToLower ().Split (delimiter);
+		substrings = pobrany_tekst.ToLower ().Split (delimiter);
 
 		//----------------------obracanie dźwigu---------------------//
 		foreach (string substring in substrings) {
@@ -72,58 +72,122 @@ public class GetText : MonoBehaviour {
 		//--------------------------------------------------------------//
 
 		//----wyszukiwanie czasowników podnoszenia i opuszczania----//
-		foreach (string substring in substrings) {
+		//foreach (string substring in substrings)
+		for(int j=0;j<substrings.Length;j++){
 			for (int i = 0; i < czas_pod.Length; i++) {
-				if (substring.Contains (czas_pod [i])) {
-					Debug.Log ("Podnieś: " + substring);
+				if (substrings[j].Contains (czas_pod [i])) {
 					czy_podnoszenie = true;
+					index_podnoszenia = j;
 				}
 			}
 
 			for (int i = 0; i < czas_kladz.Length; i++) {
-				if (substring.Contains (czas_kladz [i])) {
-					Debug.Log ("Opuść: " + substring);
+				if (substrings[j].Contains (czas_kladz [i])) {
 					czy_kladzenie = true;
+					index_kladzenia = j;
 				}
 			}
 		}
 		//---------------------------------------------------------//
 
 		//----sprawdzenie, którą funkcję należy wywołać----//
-		if (czy_podnoszenie && czy_kladzenie) {
+		if (czy_podnoszenie && czy_kladzenie && (!czy_trzymam)) {
 			Debug.Log ("Podnosze i klade");
+			if (index_kladzenia > 1) { //jeśli znaleziono czasownik kładzenia
+				znajdzObiekt (index_podnoszenia, index_kladzenia); //znajdź obiekt od indeksu czasownika podnoszenia do indeksu czasownika kładzenia
+				znajdzObiekt (index_kladzenia, substrings.Length); //znajdź obiekt od indeksu czasownika kładzenia do końca wyrażenia
+			}
 		}else if ((czy_podnoszenie) && (!czy_trzymam)) {
-			czy_trzymam = true;
+			//czy_trzymam = true;
 			Debug.Log ("Tylko podnosze");
+			znajdzObiekt ();
 		}else if (czy_kladzenie && czy_trzymam) {
 			Debug.Log ("Tylko klade");
+			znajdzObiekt ();
 		}
-		//------------------------------------------------//
+	}
 
-			
+	//wyszukiwanie jednego obiektu
+	void znajdzObiekt(){
+		string kolor="brak";
+		string rodzaj="brak";
+
 		//----sprawdzenie koloru, rodzaju i zaimków---------//
 		foreach (string substring in substrings) {
 			for (int i = 0; i < kolory.Length; i++) {
 				if (substring.Contains (kolory [i])) {
-					Debug.Log ("Twój kolor: " + substring);
+					kolor = kolory [i];
+					Debug.Log ("Twój kolor: " + substring+", "+kolor);
 				}
-			}
 
-			for (int i = 0; i < rodzaje.Length; i++) {
 				if (substring.Contains (rodzaje [i])) {
+					rodzaj = rodzaje [i];
 					Debug.Log ("Twój rodzaj: " + substring);
 				}
 			}
+		}
 
-
-			for (int i = 0; i < zaimki.Length; i++) {
-				if (substring.Contains (zaimki [i])) {
-					Debug.Log ("Twój zaimek: " + substring);
+		//weryfikacja danych dotyczących obiektu
+		if (rodzaj == "brak") {
+			Debug.Log ("Nie znaleziono obiektu :(");
+		} else if (kolor == "brak") {
+			int ile = 0;
+			for (int i = 0; i < obiekty.Length; i++) {
+				if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj)) {
+					ile++;
+					Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);
+				}
+			}
+			if (ile > 1) {
+				Debug.Log ("Znalazłem więcej niż jeden obiekt danego typu. Wprowadź kolor.");
+			}
+		} else {
+			for (int i = 0; i < obiekty.Length; i++) {
+				if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains (kolor)) {
+					Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);
 				}
 			}
 		}
-		//------------------------------------------------------//
-			
+		//------------------------------------------------
 	}
+
+	//wyszukiwanie dwóch obiektów
+	void znajdzObiekt(int start_index, int end_index){
+		string kolor="brak";
+		string rodzaj="brak";
+		//----sprawdzenie koloru i rodzaju ---------//
+		for(int j=start_index;j<end_index;j++) {
+			for (int i = 0; i < kolory.Length; i++) {
+				if (substrings[j].Contains (kolory [i])) {
+					kolor = kolory [i];
+					Debug.Log ("Twój kolor: " + substrings[j]+", "+kolor);
+				}
+
+				if (substrings[j].Contains (rodzaje [i])) {
+					rodzaj = rodzaje [i];
+					Debug.Log ("Twój rodzaj: " + substrings[j]);
+				}
+			}
+		}
+		for (int i = 0; i < obiekty.Length; i++) {
+			if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains(rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains(kolor)) {
+				Debug.Log ("Znalazłem "+obiekty [i].GetComponent<objectProperties> ().rodzaj+" "+obiekty [i].GetComponent<objectProperties> ().kolor);
+			}
+		}
+	}
+
 }
 	
+
+
+
+
+
+
+/*
+for (int i = 0; i < zaimki.Length; i++) {
+	if (substring.Contains (zaimki [i])) {
+		Debug.Log ("Twój zaimek: " + substring);
+	}
+}
+*/
