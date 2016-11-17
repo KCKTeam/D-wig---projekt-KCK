@@ -5,7 +5,9 @@ using System.Text.RegularExpressions;
 
 
 public class GetText : MonoBehaviour {
-	
+	public Text craneResponse;
+	public Text playerText;
+	public Transform TextContainer;
 	//tablica przechowująca wszystkie obiekty ze sceny
 	public GameObject [] obiekty;
 	string[] substrings;
@@ -14,21 +16,31 @@ public class GetText : MonoBehaviour {
 	string [] rodzaje = {"becz", "kontene", "skrzyn","samoch", "karto", "drzwi", "okn", "pił" };
 	string [] czas_pod = {"podnieś", "unieś"};
 	string [] czas_kladz = {"opuść", "postaw","odłóż", "połóż"};
-	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
-
-
+//	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
 
 	InputField wejscie;
+
 	void Start(){
 		//wczytanie wszystkich obiektów do tablicy
 		obiekty = GameObject.FindGameObjectsWithTag ("obiekt");
-
 		wejscie = GetComponent<InputField> ();
+		string se = new InputField.SubmitEvent ();
 	}
 		
 	public void text(){
-		string text = wejscie.text; //zmienna text przechowuje polecenie wpisane w Unity
+		string text = wejscie.text;//zmienna text przechowuje polecenie wpisane w Unity
+		myText(text);
+		wejscie.text="";
 		searchOrder(text);
+	}
+
+	public string lastText(){
+		string text = wejscie.text;
+		return text;
+	}
+
+	void szukaj(){
+
 	}
 
 
@@ -117,30 +129,34 @@ public class GetText : MonoBehaviour {
 			for (int i = 0; i < kolory.Length; i++) {
 				if (substring.Contains (kolory [i])) {
 					kolor = kolory [i];
-					Debug.Log ("Twój kolor: " + substring+", "+kolor);
+					Debug.Log ("Twój kolor: " + substring + ", " + kolor);
 				}
+			}
 
+			for (int i = 0; i < rodzaje.Length; i++) {
 				if (substring.Contains (rodzaje [i])) {
 					rodzaj = rodzaje [i];
 					Debug.Log ("Twój rodzaj: " + substring);
 				}
 			}
+
 		}
 
 		//weryfikacja danych dotyczących obiektu
 		if (rodzaj == "brak") {
-			Debug.Log ("Nie znaleziono obiektu :(");
-		} else if (kolor == "brak") {
+			string text = "Nie znaleziono obiektu.";
+			craneText (text);
+		}else if (kolor == "brak") {
 			int ile = 0;
 			for (int i = 0; i < obiekty.Length; i++) {
 				if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj)) {
 					ile++;
-					Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);
 				}
 			}
 			if (ile > 1) {
-				Debug.Log ("Znalazłem więcej niż jeden obiekt danego typu. Wprowadź kolor.");
-			}
+				string text = "Znalazłem więcej niż jeden obiekt danego typu. Wprowadź kolor.";
+				craneText (text);
+			}else if(ile==0) Debug.Log ("Nie znaleziono obiektu :(");
 		} else {
 			for (int i = 0; i < obiekty.Length; i++) {
 				if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains (kolor)) {
@@ -176,6 +192,15 @@ public class GetText : MonoBehaviour {
 		}
 	}
 
+	void craneText(string text){
+		Text newText=Instantiate (craneResponse, TextContainer, worldPositionStays:false) as Text;
+		newText.text = text;
+	}
+
+	void myText(string text){
+		Text newText=Instantiate (playerText, TextContainer, worldPositionStays:false) as Text;
+		newText.text = text;
+	}
 }
 	
 
