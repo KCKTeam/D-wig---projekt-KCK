@@ -1,0 +1,95 @@
+Micha³ Œmieszek
+Co potrafisz?
+Artur Kwiatkowski
+10:40
+Artur Kwiatkowski
+Jestem agentem dŸwig. Potrafiê przenosiæ przedmioty.
+Micha³ Œmieszek
+10:40
+Micha³ Œmieszek
+Czy umiesz siê p[oruszaæ?
+Artur Kwiatkowski
+10:41
+Artur Kwiatkowski
+Potrafiê przenosiæ przedmioty.
+Micha³ Œmieszek
+10:41
+Micha³ Œmieszek
+Jakie jest Twoje Ÿród³o energii?
+Artur Kwiatkowski
+10:42
+Artur Kwiatkowski
+Energia elektryczna.
+Micha³ Œmieszek
+10:43
+Micha³ Œmieszek
+Jak d³ugo mo¿esz pracowaæ?
+Artur Kwiatkowski
+10:43
+Artur Kwiatkowski
+Bez przerwy
+Micha³ Œmieszek
+10:43
+Micha³ Œmieszek
+to po³ó¿ czarny kontener na czerwony kontener
+Artur Kwiatkowski
+10:44
+Artur Kwiatkowski
+Znalaz³em dwa czarne kontenery
+Micha³ Œmieszek
+10:44
+Micha³ Œmieszek
+u¿yj funkcji random
+nastêpnie wybierz któryœ
+Artur Kwiatkowski
+10:44
+Artur Kwiatkowski
+Wykona³em
+Micha³ Œmieszek
+10:45
+Micha³ Œmieszek
+nic nie rób
+Artur Kwiatkowski
+10:45
+Artur Kwiatkowski
+Wykona³em.
+Micha³ Œmieszek
+10:46
+Micha³ Œmieszek
+przenieœ zielon¹ skrzynkê obok tego kontenera,który przenios³eœ
+Artur Kwiatkowski
+10:47
+Artur Kwiatkowski
+Po³o¿y³em zielon¹ skrzynkê na prawo od czarnego kontenera.
+Micha³ Œmieszek
+10:49
+Micha³ Œmieszek
+Czy mo¿esz po³o¿yæ czerwon¹ skrzynkê na prawo od zielonej?
+Artur Kwiatkowski
+10:50
+Artur Kwiatkowski
+Mogê. Wkonaæ?
+Micha³ Œmieszek
+10:50
+Micha³ Œmieszek
+tak
+Artur Kwiatkowski
+10:50
+Artur Kwiatkowski
+Wykona³em.
+Micha³ Œmieszek
+10:51
+Micha³ Œmieszek
+Postaw Marylê Rodowicz na najwy¿sz¹ skrzynkê i wy³¹cz silnik i pozwól jej œpiewaæ
+Artur Kwiatkowski
+10:52
+Artur Kwiatkowski
+Nie rozpozna³em polecenia. Przeformu³uj je.
+Micha³ Œmieszek
+10:53
+Micha³ Œmieszek
+Czy mo¿esz przenosiæ ludzi?
+Artur Kwiatkowski
+10:53
+Artur Kwiatkowski
+Nie ma obiektu luydzi na planszy.
