@@ -1,0 +1,47 @@
+Chcia³bym abyœ pojecha³ do przodu.
+O ile pól mam siê przesun¹æ do przodu? Maksymalna wartoœæ to 10.
+
+Przesuñ siê do przodu o 3 pola.
+Zrobione
+
+Przesuñ siê o 2 pola w lewo.
+zrobione
+
+Przesuñ ramiê w lewo.
+O ile stopni mam przesun¹æ ramiê ?
+
+Przesuñ o 45 stopni.
+Przesun¹³em ramiê o 45 stopni
+
+Podnieœ przedmiot.
+podnios³em czerwon¹ beczkê
+
+PojedŸ o 3 pola do ty³u.
+Zrobione
+
+Przesun ramiê o 180 stopni i od³ó¿ beczkê na ziemiê.
+Zrobione. Nic nie trzymam.
+
+PojedŸ o 9 pól w ty³.
+przekroczono wartoœæ
+
+PojedŸ maksymaln¹ liczbê pól w ty³.
+przesun¹³em siê o 8 pól w ty³
+
+PojedŸ o jedno pole w lewo
+Zrobione
+
+Przesuñ ramiê o 135 stopni
+Zrobiona
+
+Podnieœ przedmiot le¿¹cy przed Tob¹, a nastêpnie przesuñ ramiê o 180 stopni.
+w jak¹ stronê obróciæ ramiê ?
+
+Obróæ ramie w prawo.
+podnios³em niebieski kontener i obróci³em ramiê o 180 stopni w prawo
+
+PojedŸ i od³ó¿ kontener w miejscu z którego startowa³es.
+od³o¿y³em niebieski kontener obok czerwonej beczki
+
+KONIEC PRACY
+Sch³adzam silniki
