@@ -29,8 +29,6 @@ public class GetText : MonoBehaviour {
 	}
 
 	public void text(){
-		textGet = true;
-
 		string text = wejscie.text;//zmienna text przechowuje polecenie wpisane w Unity
 		myText(text);
 		wejscie.text="";
@@ -42,12 +40,8 @@ public class GetText : MonoBehaviour {
 		}
 	}
 
-	public string lastText(){
-		string text = wejscie.text;
-		return text;
-	}
-
 	string kolor = "";
+	string rodzajG = "";
 	void wczytajKolor(string text){
 		char delimiter = ' ';
 		substrings = text.ToLower ().Split (delimiter);
@@ -55,18 +49,17 @@ public class GetText : MonoBehaviour {
 			for (int j = 0; j < substrings.Length; j++) {
 				if (substrings [j].Contains (kolory [i])) {
 					kolor = kolory [i];
-					Debug.Log (text);
 					Debug.Log (kolor);
 				}
 			}
 		}
+		findGameObject (rodzajG, kolor);
 		znajdzKolor=false;
 	}
 
 	bool czy_trzymam=false;
 
 	void searchOrder(string pobrany_tekst){
-		textGet = false;
 		bool obrot = false, czy_liczba = false;
 		bool czy_podnoszenie = false, czy_kladzenie = false;
 		int index_podnoszenia = -1, index_kladzenia = -1;
@@ -85,12 +78,8 @@ public class GetText : MonoBehaviour {
 				czy_liczba = true;
 				float.TryParse (substring, out kat);
 			}
-			if (substring == "obróć") {
-				obrot = true;
-			}
-
-			if (substring == "lewo" || substring.ToLower () == "prawo") {
-				kierunek = substring.ToLower ();
+			if (substring == "lewo" || substring == "prawo") {
+				kierunek = substring;
 			}
 		}
 
@@ -98,7 +87,6 @@ public class GetText : MonoBehaviour {
 			if (kierunek == "lewo") {
 				kat *= -1;
 			}
-
 			Debug.Log ("Obracam dźwig o "+ kat.ToString() +" stopni");
 			StartCoroutine(CraneManager.Instance.rotation(kat));
 		}
@@ -170,6 +158,7 @@ public class GetText : MonoBehaviour {
 			int ile = 0;
 			for (int i = 0; i < obiekty.Length; i++) {
 				if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj)) {
+					kolor = obiekty [i].GetComponent<objectProperties> ().kolor;
 					ile++;
 				}
 			}
@@ -177,12 +166,17 @@ public class GetText : MonoBehaviour {
 				string text = "Znalazłem więcej niż jeden obiekt danego typu. Wprowadź kolor.";
 				craneText (text);
 				znajdzKolor=true;
-			}else if(ile==0) Debug.Log ("Nie znaleziono obiektu :(");
+				rodzajG = rodzaj;
+			}
 		} else {
-			for (int i = 0; i < obiekty.Length; i++) {
-				if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains (kolor)) {
-					Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);
-				}
+			findGameObject (rodzaj, kolor);
+		}
+	}
+
+	void findGameObject(string rodzaj, string kolor){
+		for (int i = 0; i < obiekty.Length; i++) {
+			if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains (kolor)) {
+				Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);
 			}
 		}
 	}
