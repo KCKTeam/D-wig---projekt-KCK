@@ -54,4 +54,9 @@ public class CraneManager : MonoBehaviour {
 		}
 			
 	}
+
+	public void Lift(GameObject obiekt){
+		Transform podnoszony = obiekt.GetComponent<Transform> ();
+
+	}
 }
