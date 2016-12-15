@@ -20,7 +20,6 @@ public class GetText : MonoBehaviour {
 //	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
 
 	InputField wejscie;
-	bool textGet=false;
 
 	void Start(){
 		//wczytanie wszystkich obiektów do tablicy
@@ -40,7 +39,7 @@ public class GetText : MonoBehaviour {
 		}
 	}
 
-	string kolor = "";
+	string kolorG = "";
 	string rodzajG = "";
 	void wczytajKolor(string text){
 		char delimiter = ' ';
@@ -48,13 +47,12 @@ public class GetText : MonoBehaviour {
 		for (int i = 0; i < kolory.Length; i++) {
 			for (int j = 0; j < substrings.Length; j++) {
 				if (substrings [j].Contains (kolory [i])) {
-					kolor = kolory [i];
-					Debug.Log (kolor);
+					kolorG = kolory [i];
 				}
 			}
 		}
-		findGameObject (rodzajG, kolor);
-		znajdzKolor=false;
+			findGameObject (rodzajG, kolorG);
+			znajdzKolor = false;
 	}
 
 	bool czy_trzymam=false;
@@ -87,7 +85,7 @@ public class GetText : MonoBehaviour {
 			if (kierunek == "lewo") {
 				kat *= -1;
 			}
-			Debug.Log ("Obracam dźwig o "+ kat.ToString() +" stopni");
+			craneText ("Obracam dźwig o " + kat.ToString () + " stopni");
 			StartCoroutine(CraneManager.Instance.rotation(kat));
 		}
 		//--------------------------------------------------------------//
@@ -119,11 +117,8 @@ public class GetText : MonoBehaviour {
 				znajdzObiekt (index_kladzenia, substrings.Length); //znajdź obiekt od indeksu czasownika kładzenia do końca wyrażenia
 			}
 		}else if ((czy_podnoszenie) && (!czy_trzymam)) {
-			//czy_trzymam = true;
-			Debug.Log ("Tylko podnosze");
 			znajdzObiekt ();
 		}else if (czy_kladzenie && czy_trzymam) {
-			Debug.Log ("Tylko klade");
 			znajdzObiekt ();
 		}
 	}
@@ -138,19 +133,24 @@ public class GetText : MonoBehaviour {
 			for (int i = 0; i < kolory.Length; i++) {
 				if (substring.Contains (kolory [i])) {
 					kolor = kolory [i];
-					Debug.Log ("Twój kolor: " + substring + ", " + kolor);
+					//Debug.Log ("Twój kolor: " + substring + ", " + kolor);
 				}
 			}
 
 			for (int i = 0; i < rodzaje.Length; i++) {
 				if (substring.Contains (rodzaje [i])) {
 					rodzaj = rodzaje [i];
-					Debug.Log ("Twój rodzaj: " + substring);
+					//Debug.Log ("Twój rodzaj: " + substring);
 				}
 			}
 		}
 
 		//weryfikacja danych dotyczących obiektu
+		checkData(rodzaj, kolor);
+
+	}
+
+	void checkData(string rodzaj, string kolor){
 		if (rodzaj == "brak") {
 			string text = "Nie znaleziono obiektu.";
 			craneText (text);
@@ -162,15 +162,20 @@ public class GetText : MonoBehaviour {
 					ile++;
 				}
 			}
+			for (int i = 0; i < kolory.Length; i++) {
+				if (kolor.Contains (kolory [i])) {
+					kolor = kolory [i];
+				}
+			}
 			if (ile > 1) {
 				string text = "Znalazłem więcej niż jeden obiekt danego typu. Wprowadź kolor.";
 				craneText (text);
 				znajdzKolor=true;
+				kolorG = "brak";
 				rodzajG = rodzaj;
 			}
-		} else {
-			findGameObject (rodzaj, kolor);
 		}
+			findGameObject (rodzaj, kolorG);
 	}
 
 	void findGameObject(string rodzaj, string kolor){
@@ -192,20 +197,14 @@ public class GetText : MonoBehaviour {
 			for (int i = 0; i < kolory.Length; i++) {
 				if (substrings [j].Contains (kolory [i])) {
 					kolor = kolory [i];
-					Debug.Log ("Twój kolor: " + substrings [j] + ", " + kolor);
 				}
 
 				if (substrings [j].Contains (rodzaje [i])) {
 					rodzaj = rodzaje [i];
-					Debug.Log ("Twój rodzaj: " + substrings [j]);
 				}
 			}
 		}
-		for (int i = 0; i < obiekty.Length; i++) {
-			if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains(rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains(kolor)) {
-				Debug.Log ("Znalazłem "+obiekty [i].GetComponent<objectProperties> ().rodzaj+" "+obiekty [i].GetComponent<objectProperties> ().kolor);
-			}
-		}
+		checkData(rodzaj, kolor);
 	}
 
 	void craneText(string text){
