@@ -1,0 +1,10 @@
+instrukcja: http://www.maltparser.org/userguide.html#startusing
+1. CMD
+2. java -jar maltparser-1.9.0.jar -c test -i examples/data/talbanken05_test.conll -o out.conll -m parse
+	maltparser-1.9.0.jar - nazwa programu
+	test - plik z gramatyk¹ polsk¹
+	examples/data/talbanken05_test.conll - plik wejœciowy .conll
+	out.conll - plik wyjœciowy .conll
+
+	
+posttager do tworzenia pliku wejœciowego .conll (concraft/wcref)
