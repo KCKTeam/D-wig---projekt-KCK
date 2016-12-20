@@ -182,6 +182,7 @@ public class GetText : MonoBehaviour {
 		for (int i = 0; i < obiekty.Length; i++) {
 			if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains (kolor)) {
 				Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);
+				StartCoroutine (CraneManager.Instance.Lift (obiekty [i]));
 			}
 		}
 	}

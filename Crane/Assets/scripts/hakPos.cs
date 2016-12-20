@@ -11,7 +11,6 @@ public class hakPos : MonoBehaviour {
 	}
 	void Update(){
 		pozycja = startPos-lina.localScale.z+1;;
-		Debug.Log (pozycja);
 		transform.position = new Vector3(transform.position.x, pozycja, transform.position.z );
 	}
 
