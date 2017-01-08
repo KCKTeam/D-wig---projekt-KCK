@@ -11,7 +11,7 @@ namespace test
 			process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 			process.StartInfo.UseShellExecute = false;
 			process.StartInfo.FileName = "cmd.exe";
-			process.StartInfo.Arguments = @"/c cd C:\Users\Dawid\Documents\Projects\testkonsolowania\test\maltparser-1.9.0\ && java -jar maltparser-1.9.0.jar -c test -i examples/data/out.conll -o test.conll -m parse";
+			process.StartInfo.Arguments = @"/c cd C:\Users\Dawid\Documents\GitHub\Dzwig---projekt-KCK\maltparser-1.9.0 && java -jar maltparser-1.9.0.jar -c test -i examples/data/test.conll -o out.conll -m parse";
 			//process.StartInfo.RedirectStandardOutput = true;
 			process.Start();
 			//output = process.StandardOutput.ReadToEnd ();

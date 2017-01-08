@@ -1,0 +1,12 @@
+1	We	w	prep	prep	acc|wok
+2	wtorek	wtorek	subst	subst	sg|acc|m3
+3	prezydent	prezydent	subst	subst	sg|nom|m1
+4	Robert	Robert	subst	subst	sg|nom|m1
+5	Choma	Choma	subst	subst	sg|nom|m1
+6	skierował	skierować	praet	praet	sg|m1|perf
+7	sprawę	sprawa	subst	subst	sg|acc|f
+8	do	do	prep	prep	gen
+9	Danuty	Danuta	subst	subst	sg|gen|f
+10	Wiech	Wiech	subst	subst	sg|gen|f
+11	.	.	interp	interp	_
+
