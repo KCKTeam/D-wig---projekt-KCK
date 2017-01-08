@@ -116,15 +116,29 @@ public class GetText : MonoBehaviour {
 				znajdzObiekt (index_podnoszenia, index_kladzenia); //znajdź obiekt od indeksu czasownika podnoszenia do indeksu czasownika kładzenia
 				znajdzObiekt (index_kladzenia, substrings.Length); //znajdź obiekt od indeksu czasownika kładzenia do końca wyrażenia
 			}
-		}else if ((czy_podnoszenie) && (!czy_trzymam)) {
-			znajdzObiekt ();
-		}else if (czy_kladzenie && czy_trzymam) {
-			znajdzObiekt ();
+		}else if (czy_podnoszenie) {
+			GameObject obiekt=znajdzObiekt ();
+			if (obiekt != null) {
+				StartCoroutine (CraneManager.Instance.Lift (obiekt));
+			}
+		}else if (czy_kladzenie) {
+			czy_trzymam=CraneManager.Instance.checkJoint ();
+			if (!czy_trzymam) {
+				string text = "Nie trzymam zadnego obiektu";
+				craneText (text);
+			} else {
+				string text = "Opuszczam...";
+				craneText (text);
+				StartCoroutine (CraneManager.Instance.putDown ());
+			}
+			//GameObject obiekt=znajdzObiekt ();
+			//Debug.Log ("Znalazłem " + obiekt.GetComponent<objectProperties> ().rodzaj + " " + obiekt.GetComponent<objectProperties> ().kolor);
 		}
 	}
 
 	//wyszukiwanie jednego obiektu
-	void znajdzObiekt(){
+	GameObject znajdzObiekt(){
+		GameObject findedObject;
 		string kolor="brak";
 		string rodzaj="brak";
 
@@ -146,11 +160,13 @@ public class GetText : MonoBehaviour {
 		}
 
 		//weryfikacja danych dotyczących obiektu
-		checkData(rodzaj, kolor);
+		findedObject=checkData(rodzaj, kolor);
+		return findedObject;
 
 	}
 
-	void checkData(string rodzaj, string kolor){
+	GameObject checkData(string rodzaj, string kolor){
+		GameObject obiekt;
 		if (rodzaj == "brak") {
 			string text = "Nie znaleziono obiektu.";
 			craneText (text);
@@ -175,16 +191,21 @@ public class GetText : MonoBehaviour {
 				rodzajG = rodzaj;
 			}
 		}
-			findGameObject (rodzaj, kolorG);
+		obiekt=findGameObject (rodzaj, kolorG);
+		return obiekt;
 	}
 
-	void findGameObject(string rodzaj, string kolor){
+	GameObject findGameObject(string rodzaj, string kolor){
+		GameObject obiekt=null;
 		for (int i = 0; i < obiekty.Length; i++) {
 			if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains (kolor)) {
 				Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);
-				StartCoroutine (CraneManager.Instance.Lift (obiekty [i]));
+				obiekt=obiekty [i];
+				//StartCoroutine (CraneManager.Instance.Lift (obiekty [i]));
 			}
 		}
+		return obiekt;
+
 	}
 		//------------------------------------------------
 	
@@ -219,17 +240,3 @@ public class GetText : MonoBehaviour {
 	}
 
 }
-	
-
-
-
-
-
-
-/*
-for (int i = 0; i < zaimki.Length; i++) {
-	if (substring.Contains (zaimki [i])) {
-		Debug.Log ("Twój zaimek: " + substring);
-	}
-}
-*/

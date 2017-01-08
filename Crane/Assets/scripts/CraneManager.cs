@@ -42,23 +42,48 @@ public class CraneManager : MonoBehaviour {
 		}
 	}
 
-	//IEnumerator Move(){
-
-	//}
-
 	public IEnumerator Lift(GameObject obiekt){
 		yield return StartCoroutine (rotation(Angle(obiekt)));
 		yield return StartCoroutine (Move (Distance (obiekt)));
-		yield return StartCoroutine (putDown(obiekt));
-		StartCoroutine (putUp (obiekt));
+		yield return StartCoroutine (lineDown(obiekt));
+		StartCoroutine (lineUp ());
 	}
 
-	IEnumerator putDown(GameObject obiekt){
+	public IEnumerator putDown(){
+		yield return StartCoroutine (putObjectDown());
+		StartCoroutine (lineUp ());
+
+	}
+	public IEnumerator putObjectDown(){
+		GameObject obiekt = hak.GetChild (0).GetComponent<FixedJoint> ().connectedBody.gameObject;
+		Debug.Log (obiekt.GetComponent<objectProperties> ().rodzaj + " " + obiekt.GetComponent<objectProperties> ().kolor);
+		if (obiekt != null) {
+			float przesun = obiekt.transform.GetChild (1).transform.position.y;
+			float time = 0.01f / speed;
+			if (przesun < 0) {
+				float moveDistance = -0.1f;
+				while (przesun < 0f) {
+					lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z + moveDistance);
+					przesun += moveDistance;
+					yield return new WaitForSeconds (time);
+				}
+			} else {
+				float moveDistance = 0.1f;
+				while (przesun > 0f) {
+					lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z + moveDistance);
+					przesun -= moveDistance;
+					yield return new WaitForSeconds (time);
+				}
+			}
+			hak.GetChild (0).GetComponent<FixedJoint> ().connectedBody = null;
+		}
+	}
+
+	IEnumerator lineDown(GameObject obiekt){
 		float yObiekt = obiekt.transform.GetChild(0).transform.position.y;
 		float yHak = hak.position.y;
 		float przesun = yObiekt - yHak+1.4f;
 		float time = 0.01f/speed;
-
 
 		if (przesun < 0) {
 			float moveDistance = 0.1f;
@@ -79,7 +104,7 @@ public class CraneManager : MonoBehaviour {
 		}
 	}
 
-	IEnumerator putUp(GameObject obiekt){
+	IEnumerator lineUp(){
 		float przesun = 20f;
 		float time = 0.01f/speed;
 		float moveDistance = 0.1f;
@@ -93,12 +118,27 @@ public class CraneManager : MonoBehaviour {
 	float Angle(GameObject obiekt){
 		Vector2 vec1 = new Vector2 (transform.position.x, transform.position.z);
 		Vector2 vec2 = new Vector2 (obiekt.transform.position.x, obiekt.transform.position.z);
+		Vector2 vec3 = new Vector2 (hak.position.x, hak.position.z);
 		float x = vec2.x - vec1.x;
 		float y = vec2.y - vec1.y;
 		Debug.Log (x + " " + y);
 		float tan = Mathf.Atan(y/x);
 		float angle = tan * (180 / Mathf.PI);
-		Debug.Log ("Kąt: " + angle);
+		if (vec2.x < 0 && vec2.y > 0) {
+			angle = 180 + angle;
+		}
+
+		if (vec2.x < 0 && vec2.y < 0) {
+			angle = -180 + angle;
+
+		}
+		/*float x1=vec3.x-vec1.x;
+		float y1=vec3.y-vec1.y;
+		float tan1=Mathf.Atan(y1/x1);
+		float angle1=tan1*(180/Mathf.PI);
+		if (angle1>0) angle1=angle1*(-1);
+		float angle2 = angle + angle1;*/
+		Debug.Log ("Kąt: " + angle + " ");
 		return angle*(-1);
 	}
 
@@ -126,5 +166,10 @@ public class CraneManager : MonoBehaviour {
 		Vector2 vec2 = new Vector2 (prowadnica.position.x, prowadnica.position.z);
 		float distance = Vector2.Distance (vec1, vec2);
 		return distance;
+	}
+
+	public bool checkJoint(){
+		bool joint = !(hak.GetChild (0).GetComponent<FixedJoint> ().connectedBody == null);
+		return joint;
 	}
 }
