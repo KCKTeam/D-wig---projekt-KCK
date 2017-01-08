@@ -1,0 +1,23 @@
+using System;
+
+namespace test
+{
+	class MainClass
+	{
+		public static void Main (string[] args)
+		{
+			//string output;
+			System.Diagnostics.Process process = new System.Diagnostics.Process();
+			process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+			process.StartInfo.UseShellExecute = false;
+			process.StartInfo.FileName = "cmd.exe";
+			process.StartInfo.Arguments = @"/c cd C:\Users\Dawid\Documents\Projects\testkonsolowania\test\maltparser-1.9.0\ && java -jar maltparser-1.9.0.jar -c test -i examples/data/out.conll -o test.conll -m parse";
+			//process.StartInfo.RedirectStandardOutput = true;
+			process.Start();
+			//output = process.StandardOutput.ReadToEnd ();
+			process.WaitForExit ();
+			//System.Console.WriteLine(output);
+			//System.Console.Read();
+		}
+	}
+}

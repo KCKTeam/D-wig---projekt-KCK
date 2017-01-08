@@ -1,6 +1,17 @@
 instrukcja: http://www.maltparser.org/userguide.html#startusing
+
+parser:
+http://www.maltparser.org/download.html
+
+slownik:
+http://zil.ipipan.waw.pl/Sk%C5%82adnica?action=AttachFile&do=view&target=Sk%C5%82adnica-zale%C5%BCno%C5%9Bciowa-0.5.conll.gz
+
+
 1. CMD
-2. java -jar maltparser-1.9.0.jar -c test -i examples/data/talbanken05_test.conll -o out.conll -m parse
+
+2. java -jar maltparser-1.9.0.jar -c test -i examples/data/Skladnica-zaleznosciowa-mod_130121.conll -m learn
+
+3. java -jar maltparser-1.9.0.jar -c test -i examples/data/talbanken05_test.conll -o out.conll -m parse
 	maltparser-1.9.0.jar - nazwa programu
 	test - plik z gramatyk¹ polsk¹
 	examples/data/talbanken05_test.conll - plik wejœciowy .conll
@@ -8,3 +19,17 @@ instrukcja: http://www.maltparser.org/userguide.html#startusing
 
 	
 posttager do tworzenia pliku wejœciowego .conll (concraft/wcref)
+
+opis kolumn w out.conll :
+
+to podaje postagger:
+-ID
+-Wyraz w oryginalnej formie tak jak wpisalismy w programie
+-Trzon wyrazu
+-Czesc mowy (oryginalny wyraz)
+-Czesc mowy (trzon)
+-Funkcje morfologicze (?) [w kazdym razie nas nie interesuje]
+to dodaje parser:
+-indeks na ID ojca
+-nieistotne zwykle "_"
+-nieistotne zwykle "_"
