@@ -121,30 +121,35 @@ public class CraneManager : MonoBehaviour {
 		Vector2 vec3 = new Vector2 (hak.position.x, hak.position.z);
 		float x = vec2.x - vec1.x;
 		float y = vec2.y - vec1.y;
-		Debug.Log (x + " " + y);
 		float tan = Mathf.Atan(y/x);
 		float angle = tan * (180 / Mathf.PI);
+
+		float x1 = vec3.x - vec1.x;
+		float y1 = vec3.y - vec1.y;
+		float tan1 = Mathf.Atan(y1/x1);
+		float angle1 = tan1 * (180 / Mathf.PI);
+
 		if (vec2.x < 0 && vec2.y > 0) {
 			angle = 180 + angle;
 		}
-
 		if (vec2.x < 0 && vec2.y < 0) {
 			angle = -180 + angle;
-
 		}
-		/*float x1=vec3.x-vec1.x;
-		float y1=vec3.y-vec1.y;
-		float tan1=Mathf.Atan(y1/x1);
-		float angle1=tan1*(180/Mathf.PI);
-		if (angle1>0) angle1=angle1*(-1);
-		float angle2 = angle + angle1;*/
-		Debug.Log ("Kąt: " + angle + " ");
-		return angle*(-1);
+		if (vec3.x < 0 && vec3.y > 0) {
+			angle1 = 180 + angle1;
+		}
+		if (vec3.x < 0 && vec3.y < 0) {
+			angle1 = -180 + angle1;
+		}
+
+		float angle2=angle - angle1;
+		return angle2*(-1);
 	}
 
 	IEnumerator Move(float distance){
 		float time = 0.01f;
 		if (distance > 0) {
+			Debug.Log ("pierwsza");
 			float moveDistance = 0.1f;
 			while (distance > 0f) {
 				prowadnica.transform.localPosition = new Vector3 (prowadnica.transform.localPosition.x, prowadnica.transform.localPosition.y, prowadnica.transform.localPosition.z + moveDistance);
@@ -152,6 +157,7 @@ public class CraneManager : MonoBehaviour {
 				yield return new WaitForSeconds (time);
 			}
 		} else {
+			Debug.Log ("druga");
 			float moveDistance = -0.1f;
 			while (distance < 0f) {
 				prowadnica.transform.localPosition = new Vector3 (prowadnica.transform.localPosition.x, prowadnica.transform.localPosition.y, prowadnica.transform.localPosition.z + moveDistance);
@@ -165,6 +171,16 @@ public class CraneManager : MonoBehaviour {
 		Vector2 vec1 = new Vector2 (obiekt.transform.position.x, obiekt.transform.position.z);
 		Vector2 vec2 = new Vector2 (prowadnica.position.x, prowadnica.position.z);
 		float distance = Vector2.Distance (vec1, vec2);
+
+		if (vec2.y >= 0) {
+			if(vec1.y<=vec2.y)
+				distance=distance*(-1);
+		}
+		if (vec2.y < 0) {
+			if(vec1.y>=vec2.y)
+				distance=distance*(-1);
+		}
+
 		return distance;
 	}
 
