@@ -1,0 +1,6 @@
+j:\documents\visual studio 2015\Projects\parsowanie zdania\parsowanie zdania\bin\Debug\parsowanie zdania.exe.config
+j:\documents\visual studio 2015\Projects\parsowanie zdania\parsowanie zdania\obj\Debug\parsowanie zdania.csprojResolveAssemblyReference.cache
+j:\documents\visual studio 2015\Projects\parsowanie zdania\parsowanie zdania\bin\Debug\parsowanie zdania.exe
+j:\documents\visual studio 2015\Projects\parsowanie zdania\parsowanie zdania\bin\Debug\parsowanie zdania.pdb
+j:\documents\visual studio 2015\Projects\parsowanie zdania\parsowanie zdania\obj\Debug\parsowanie zdania.exe
+j:\documents\visual studio 2015\Projects\parsowanie zdania\parsowanie zdania\obj\Debug\parsowanie zdania.pdb
