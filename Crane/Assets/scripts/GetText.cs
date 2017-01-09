@@ -29,9 +29,10 @@ public class GetText : MonoBehaviour {
 
 	public void text(){
 		string text = wejscie.text;//zmienna text przechowuje polecenie wpisane w Unity
-		myText(text);
+		myText(text); //wyswietla w oknie gry tekst wpisany przez uzytkownika
 		wejscie.text="";
 
+		//sprawdzenie czy nalezy wyszukac tylko kolor czy przeszukac cale wyrazenie
 		if (znajdzKolor) {
 			wczytajKolor (text);
 		} else {
