@@ -10,8 +10,8 @@ public class CameraController : MonoBehaviour {
 	float rotationSpeed=80f;
 	// Use this for initialization
 	void Start () {
-		rotationPoint =  new Vector3 (20f, 0, 0f);
-		lookAtPoint = new Vector3 (20f, 10f, 0f);
+		rotationPoint =  new Vector3 (0f, 0, 0f);
+		lookAtPoint = new Vector3 (0f, 10f, 0f);
 		direction = Vector3.zero;
 	}
 	

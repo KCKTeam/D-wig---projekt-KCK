@@ -21,7 +21,7 @@ public class CraneManager : MonoBehaviour {
 	public Transform Crane;
 
 	void Start(){
-		//StartCoroutine (Lift (toLiftObject));
+		StartCoroutine (putUpDistance (-10f));
 	}
 
 	public IEnumerator rotation(float rotation){
@@ -59,7 +59,7 @@ public class CraneManager : MonoBehaviour {
 		Debug.Log (obiekt.GetComponent<objectProperties> ().rodzaj + " " + obiekt.GetComponent<objectProperties> ().kolor);
 		if (obiekt != null) {
 			float przesun = obiekt.transform.GetChild (1).transform.position.y;
-			float time = 0.01f / speed;
+			float time = 0.01f;
 			if (przesun < 0) {
 				float moveDistance = -0.1f;
 				while (przesun < 0f) {
@@ -76,6 +76,26 @@ public class CraneManager : MonoBehaviour {
 				}
 			}
 			hak.GetChild (0).GetComponent<FixedJoint> ().connectedBody = null;
+		}
+	}
+
+	public IEnumerator putUpDistance(float distance){
+		float przesun = distance;
+		float time = 0.01f;
+		if (przesun < 0) {
+			float moveDistance = -0.1f;
+			while (przesun < 0f && lina.localScale.z>0) {
+				lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z + moveDistance);
+				przesun += moveDistance;
+				yield return new WaitForSeconds (time);
+			}
+		} else {
+			float moveDistance = 0.1f;
+			while (przesun > 0f && lina.localScale.z>0) {
+				lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z + moveDistance);
+				przesun -= moveDistance;
+				yield return new WaitForSeconds (time);
+			}
 		}
 	}
 
@@ -149,7 +169,6 @@ public class CraneManager : MonoBehaviour {
 	IEnumerator Move(float distance){
 		float time = 0.01f;
 		if (distance > 0) {
-			Debug.Log ("pierwsza");
 			float moveDistance = 0.1f;
 			while (distance > 0f) {
 				prowadnica.transform.localPosition = new Vector3 (prowadnica.transform.localPosition.x, prowadnica.transform.localPosition.y, prowadnica.transform.localPosition.z + moveDistance);
@@ -157,7 +176,6 @@ public class CraneManager : MonoBehaviour {
 				yield return new WaitForSeconds (time);
 			}
 		} else {
-			Debug.Log ("druga");
 			float moveDistance = -0.1f;
 			while (distance < 0f) {
 				prowadnica.transform.localPosition = new Vector3 (prowadnica.transform.localPosition.x, prowadnica.transform.localPosition.y, prowadnica.transform.localPosition.z + moveDistance);
