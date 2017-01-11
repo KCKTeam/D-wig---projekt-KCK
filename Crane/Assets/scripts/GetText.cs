@@ -120,6 +120,8 @@ public class GetText : MonoBehaviour {
 		}else if (czy_podnoszenie) {
 			GameObject obiekt=znajdzObiekt ();
 			if (obiekt != null) {
+				string text = "Podnoszę "+obiekt.GetComponent<objectProperties>().kolor+" "+obiekt.GetComponent<objectProperties>().rodzaj;
+				craneText (text);
 				StartCoroutine (CraneManager.Instance.Lift (obiekt));
 			}
 		}else if (czy_kladzenie) {
@@ -192,12 +194,13 @@ public class GetText : MonoBehaviour {
 				rodzajG = rodzaj;
 			}
 		}
-		obiekt=findGameObject (rodzaj, kolorG);
+		obiekt=findGameObject (rodzaj, kolor);
 		return obiekt;
 	}
 
 	GameObject findGameObject(string rodzaj, string kolor){
 		GameObject obiekt=null;
+		Debug.Log (rodzaj + kolor);
 		for (int i = 0; i < obiekty.Length; i++) {
 			if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj) && obiekty [i].GetComponent<objectProperties> ().kolor.Contains (kolor)) {
 				Debug.Log ("Znalazłem " + obiekty [i].GetComponent<objectProperties> ().rodzaj + " " + obiekty [i].GetComponent<objectProperties> ().kolor);

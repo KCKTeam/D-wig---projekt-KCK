@@ -10,6 +10,7 @@ public class CraneManager : MonoBehaviour {
 	public float speed = 5f;
 	private static CraneManager instance;
 	public static CraneManager Instance{ get { return instance; } }
+
 	void Awake(){
 		if (instance == null)
 			instance = this;
