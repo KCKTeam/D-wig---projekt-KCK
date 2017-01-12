@@ -15,7 +15,7 @@ public class Zapytanie{
 
 	public int czasownik_pod, czasownik_opu;
 	public int obroc, kierunek, hak;
-	public float liczba;
+	public float liczba=0;
 	public int sektor_z, sektor_do, sektor;
 	public int trzyma;
 

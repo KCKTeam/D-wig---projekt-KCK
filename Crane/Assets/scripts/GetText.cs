@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 
 public class GetText : MonoBehaviour {
@@ -10,13 +11,16 @@ public class GetText : MonoBehaviour {
 	public Transform TextContainer;
 	//tablica przechowująca wszystkie obiekty ze sceny
 	public GameObject [] obiekty;
-	string[] substrings;
+	/*string[] substrings;
 	//słowa kluczowe
 	string [] kolory = {"ziel","niebi","czerw", "fiolet", "żółt", "biał", "czarn"};
 	string [] rodzaje = {"becz", "kontene", "skrzyn","samoch", "karto", "drzwi", "okn", "pił" };
 	string [] czas_pod = {"podnieś", "unieś"};
 	string [] czas_kladz = {"opuść", "postaw","odłóż", "połóż"};
-	bool znajdzKolor=false;
+	bool znajdzKolor=false;*/
+
+	Slownik slownik=new Slownik();
+	AnalizaZapytania analiza;
 //	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
 
 	InputField wejscie;
@@ -25,8 +29,23 @@ public class GetText : MonoBehaviour {
 		//wczytanie wszystkich obiektów do tablicy
 		obiekty = GameObject.FindGameObjectsWithTag ("obiekt");
 		wejscie = GetComponent<InputField> ();
+		analiza = gameObject.AddComponent (typeof(AnalizaZapytania)) as AnalizaZapytania;
 	}
 
+	public void text(){
+		string text = wejscie.text;//zmienna text przechowuje polecenie wpisane w Unity
+		myText(text); //wyswietla w oknie gry tekst wpisany przez uzytkownika
+		wejscie.text="";
+
+		Zapytanie nowe=new Zapytanie(text);
+		analiza.dodajZapytanie (nowe);
+		analiza.dodajSlownik (slownik);
+		analiza.znajdzTokeny ();
+		analiza.znajdzPolecenie ();
+
+	}
+
+	/*
 	public void text(){
 		string text = wejscie.text;//zmienna text przechowuje polecenie wpisane w Unity
 		myText(text); //wyswietla w oknie gry tekst wpisany przez uzytkownika
@@ -237,7 +256,7 @@ public class GetText : MonoBehaviour {
 		Text newText=Instantiate (craneResponse, TextContainer, worldPositionStays:false) as Text;
 		newText.text = text;
 	}
-
+*/
 	void myText(string text){
 		Text newText=Instantiate (playerText, TextContainer, worldPositionStays:false) as Text;
 		newText.text = text;

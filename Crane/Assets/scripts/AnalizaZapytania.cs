@@ -1,18 +1,27 @@
 ﻿using System;
+using UnityEngine;
 using System.Text.RegularExpressions;
 
-public class AnalizaZapytania{
+public class AnalizaZapytania : MonoBehaviour{
 	Zapytanie zapytanie;
 	Slownik slownik;
 
 	string [] substrings;
 	char delimiter = ' ';
 
-	public AnalizaZapytania (Zapytanie noweZapytanie, Slownik nowySlownik){
-		zapytanie = noweZapytanie; slownik = nowySlownik; substrings=zapytanie.getTekstZapytania().ToLower ().Split (delimiter);
+	public AnalizaZapytania (){
 	}
 
-	void znajdzTokeny(){
+	public void dodajZapytanie(Zapytanie doDodania){
+		zapytanie = doDodania;
+		substrings = zapytanie.getTekstZapytania ().Split (delimiter);
+	}
+
+	public void dodajSlownik(Slownik doDodania){
+		slownik = doDodania;
+	}
+		
+	public void znajdzTokeny(){
 		int index = 0;
 		foreach (string substring in substrings) {
 			
@@ -94,8 +103,14 @@ public class AnalizaZapytania{
 		}
 	}
 
-	void znajdzPolecenie(){
-
+	public void znajdzPolecenie(){
+		if (zapytanie.obrocB && zapytanie.liczba != 0) {
+			if (substrings [zapytanie.kierunek].Contains ("lew")) {
+				zapytanie.liczba = zapytanie.liczba * -1f;
+			}
+			float kat = zapytanie.liczba;
+			StartCoroutine(CraneManager.Instance.rotation(kat));
+		}
 	}
 }
 
