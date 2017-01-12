@@ -2,7 +2,7 @@
 
 public class Slownik{
 	
-	public string [] kolory = {"ziel","niebi","czerw", "fiolet", "żółt", "biał", "czarn"};
+	public string [] kolory = {"ziel","niebi","czerw", "fiolet", "żółt", "biał", "czarn", "szar"};
 	public string [] rodzaje = {"becz", "kontene", "skrzyn","samoch", "karto", "drzwi", "okn", "pił" };
 	public string [] czas_pod = {"podnieś", "unieś"};
 	public string [] czas_opu = {"opuść", "postaw","odłóż", "połóż"};
