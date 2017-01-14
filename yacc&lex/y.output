@@ -1,0 +1,126 @@
+Grammar
+
+    0 $accept: cmd $end
+
+    1 cmd: czasownik przedmiot
+
+    2 czasownik: CZASOWNIK_PODNOSZENIA
+    3          | CZASOWNIK_OPUSZCZENIA
+
+    4 przedmiot: cecha przedmiot
+    5          | RODZAJ
+
+    6 cecha: KOLOR
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+CZASOWNIK_PODNOSZENIA (258) 2
+CZASOWNIK_OPUSZCZENIA (259) 3
+RODZAJ (260) 5
+KOLOR (261) 6
+
+
+Nonterminals, with rules where they appear
+
+$accept (7)
+    on left: 0
+cmd (8)
+    on left: 1, on right: 0
+czasownik (9)
+    on left: 2 3, on right: 1
+przedmiot (10)
+    on left: 4 5, on right: 1 4
+cecha (11)
+    on left: 6, on right: 4
+
+
+State 0
+
+    0 $accept: . cmd $end
+
+    CZASOWNIK_PODNOSZENIA  shift, and go to state 1
+    CZASOWNIK_OPUSZCZENIA  shift, and go to state 2
+
+    cmd        go to state 3
+    czasownik  go to state 4
+
+
+State 1
+
+    2 czasownik: CZASOWNIK_PODNOSZENIA .
+
+    $default  reduce using rule 2 (czasownik)
+
+
+State 2
+
+    3 czasownik: CZASOWNIK_OPUSZCZENIA .
+
+    $default  reduce using rule 3 (czasownik)
+
+
+State 3
+
+    0 $accept: cmd . $end
+
+    $end  shift, and go to state 5
+
+
+State 4
+
+    1 cmd: czasownik . przedmiot
+
+    RODZAJ  shift, and go to state 6
+    KOLOR   shift, and go to state 7
+
+    przedmiot  go to state 8
+    cecha      go to state 9
+
+
+State 5
+
+    0 $accept: cmd $end .
+
+    $default  accept
+
+
+State 6
+
+    5 przedmiot: RODZAJ .
+
+    $default  reduce using rule 5 (przedmiot)
+
+
+State 7
+
+    6 cecha: KOLOR .
+
+    $default  reduce using rule 6 (cecha)
+
+
+State 8
+
+    1 cmd: czasownik przedmiot .
+
+    $default  reduce using rule 1 (cmd)
+
+
+State 9
+
+    4 przedmiot: cecha . przedmiot
+
+    RODZAJ  shift, and go to state 6
+    KOLOR   shift, and go to state 7
+
+    przedmiot  go to state 10
+    cecha      go to state 9
+
+
+State 10
+
+    4 przedmiot: cecha przedmiot .
+
+    $default  reduce using rule 4 (przedmiot)

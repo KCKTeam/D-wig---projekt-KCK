@@ -1,0 +1,17 @@
+dla pliku mag.y
+1. yacc -v -d mag.y
+2. mv y.tab.c mag_p.c
+3. gcc -c mag_p.c
+4. mv y.tab.h mag_l.h
+
+dla pliku mag.l
+1. lex -l mag.l
+2. mv lex.yy.c mag_l.c
+3. gcc -c mag_l.c
+
+linkowanie wszystkich plików
+1. gcc -DDEBUG -o magazyn magazyn.c mag_p.o mag_l.o
+
+Uruchamiamy wpisując: ./magazyn
+I po znaku zachęty "?" wpisujemy polecenie dźwigu a parser sprawdza czy należy do naszej gramatyki. Jeśli tak to wypisze OK, jeśli nie wyrzuci błędy.
+Działa w nieskończonej pętli więc aby zatrzymać nadusić: ctr+c
