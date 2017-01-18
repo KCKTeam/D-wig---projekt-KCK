@@ -7,6 +7,7 @@ public class AnalizaZapytania : MonoBehaviour{
 	Slownik slownik;
 
 	string [] substrings;
+	char [] tokeny;
 	char delimiter = ' ';
 
 	public AnalizaZapytania (){
@@ -15,6 +16,7 @@ public class AnalizaZapytania : MonoBehaviour{
 	public void dodajZapytanie(Zapytanie doDodania){
 		zapytanie = doDodania;
 		substrings = zapytanie.getTekstZapytania ().Split (delimiter);
+		tokeny = new char[3];
 	}
 
 	public void dodajSlownik(Slownik doDodania){
@@ -30,6 +32,7 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.czas_pod [i])) {
 					zapytanie.czasownik_podB = true;
 					zapytanie.czasownik_pod = index;
+					tokeny [index] = 'c';
 				}
 			}
 
@@ -38,6 +41,7 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.czas_opu[i])) {
 					zapytanie.czasownik_opuB = true;
 					zapytanie.czasownik_opu = index;
+					tokeny [index] = 'c';
 				}
 			}
 
@@ -45,6 +49,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < slownik.rodzaje.Length; i++) {
 				if (substring.Contains (slownik.rodzaje [i])) {
 					zapytanie.obiekty_rodzaj.Add (index);
+					tokeny [index] = 'r';
 				}
 			}
 
@@ -52,12 +57,14 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < slownik.kolory.Length; i++) {
 				if (substring.Contains (slownik.kolory [i])) {
 					zapytanie.obiekty_kolor.Add (index);
+					tokeny [index] = 'k';
 				}
 			}
 
 			//znajdowanie liczby
 			if (Regex.IsMatch (substring, @"^\d+$")) {
 				float.TryParse (substring, out zapytanie.liczba);
+				tokeny [index] = 'l';
 			}
 
 			//znajdowanie słów obrotu
@@ -65,6 +72,7 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.czas_obrotu[i])) {
 					zapytanie.obrocB = true;
 					zapytanie.obroc = index;
+					tokeny [index] = 'c';
 				}
 			}
 
@@ -81,6 +89,7 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.kierunki[i])) {
 					zapytanie.kierunekB = true;
 					zapytanie.kierunek = index;
+					tokeny [index] = 'j';
 				}
 			}
 
@@ -88,6 +97,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < slownik.zaimki.Length; i++) {
 				if (substring.Contains (slownik.zaimki[i])) {
 					zapytanie.zaimki.Add (index);
+					tokeny [index] = 'z';
 				}
 			}
 
@@ -101,6 +111,12 @@ public class AnalizaZapytania : MonoBehaviour{
 
 			index++;
 		}
+		Debug.Log (tokeny[0]);
+	}
+
+	public void CKYstart(){
+		CKY parserCYK = new CKY ();
+		parserCYK.Parsowanie (tokeny);
 	}
 
 	public void znajdzPolecenie(){

@@ -2,43 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEngine;
 
-class CKY{
-	public void Parsowanie(char [] tokeny){
-		
-		bool Output = false; //Variable de salida del programa//
-		List<Production> Grammar = new List<Production>(); //Lista de producciones de la gramatica//
-		//Adicion de producciones a la gramatica//
-		Grammar.Add(new Production("S","D"));
-		Grammar.Add(new Production("S","CA"));
-		Grammar.Add(new Production("D","DD"));
-		Grammar.Add(new Production("D","CA"));
-		Grammar.Add(new Production("A","P"));
-		Grammar.Add(new Production("A","LJ"));
-		Grammar.Add(new Production("A","ZA"));
-		Grammar.Add(new Production("A","AA"));
-		Grammar.Add(new Production("P","kP"));
+namespace CKY
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			bool Output = false; //Variable de salida del programa//
+			List<Production> Grammar = new List<Production>(); //Lista de producciones de la gramatica//
+			//Adicion de producciones a la gramatica//
+			/*Grammar.Add(new Production("S","AA"));
+			Grammar.Add(new Production("S","0"));
+			Grammar.Add(new Production("A","SS"));
+			Grammar.Add(new Production("A","1"));*/
 
-		Grammar.Add(new Production("P","r"));
-		Grammar.Add(new Production("L","l"));
-		Grammar.Add(new Production("J","j"));
-		Grammar.Add(new Production("Z","z"));
-		Grammar.Add(new Production("C","c"));
-		Grammar.Add(new Production("K","k"));
-		//Fin de adicion de producciones a la gramatica//
+			Grammar.Add (new Production ("A","CW"));
+			Grammar.Add (new Production ("A","CR"));
+			Grammar.Add (new Production ("A","AA"));
+			Grammar.Add (new Production ("W","R"));
+			Grammar.Add (new Production ("W","KR"));
+			Grammar.Add (new Production ("W","WW"));
+			Grammar.Add (new Production ("W","DL"));
+			Grammar.Add (new Production ("W","ZW"));
+			Grammar.Add (new Production ("W","ZR"));
 
-		char [] Word = tokeny;//Palabra que se debe comprobar//
-		List<Production>[,] CKYMat = new List<Production>[Word.Length,Word.Length];//Matriz de resultados//
+			Grammar.Add (new Production ("C","c"));
+			Grammar.Add (new Production ("K","k"));
+			Grammar.Add (new Production ("R","r"));
+			Grammar.Add (new Production ("Z","z"));
+			Grammar.Add (new Production ("D","d"));
+			Grammar.Add (new Production ("L","l"));
+
+
+
+			//Fin de adicion de producciones a la gramatica//
+
+			string Word = "crcdlczr";//Palabra que se debe comprobar//
+			List<Production>[,] CKYMat = new List<Production>[Word.Length,Word.Length];//Matriz de resultados//
 
 			//Inicializacion de la matriz de resultados//
-		for (int a = 0; a < Word.Length; a++)
-		{
-			for (int b = 0; b < Word.Length; b++)
+			for (int a = 0; a < Word.Length; a++)
 			{
-				CKYMat[a, b] = new List<Production>();
+				for (int b = 0; b < Word.Length; b++)
+				{
+					CKYMat[a, b] = new List<Production>();
+				}
 			}
-		}
 			//Fin de inicializacion de la matriz//
 
 			//Llenado de la primera fila de la matriz//
@@ -105,12 +115,13 @@ class CKY{
 
 			foreach (Production prod in Grammar)
 			{
-				if (prod.Generador == "S"&&CKYMat[0, Word.Length - 1].Contains(prod))//Se comprueba si existe un generador S en la punta de la escalera para ver si hay que devolver true//
+				if (prod.Generador == "A"&&CKYMat[0, Word.Length - 1].Contains(prod))//Se comprueba si existe un generador S en la punta de la escalera para ver si hay que devolver true//
 				{
 					Output = true;
 				}
 			}
-			Debug.Log(Output);//Escribe true si la palabra es generada por la gramatica//
-			//Console.Read();//Mantiene la consola abierta//
+			Console.WriteLine(Output);//Escribe true si la palabra es generada por la gramatica//
+			Console.Read();//Mantiene la consola abierta//
 		}
 	}
+}

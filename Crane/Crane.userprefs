@@ -1,14 +1,16 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\CraneManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\AnalizaZapytania.cs">
     <Files>
-      <File FileName="Assets\scripts\CraneManager.cs" Line="5" Column="2" />
+      <File FileName="Assets\scripts\CraneManager.cs" Line="1" Column="1" />
       <File FileName="Assets\scripts\hakPos.cs" Line="1" Column="1" />
       <File FileName="Assets\scripts\CameraController.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\GetText.cs" Line="40" Column="38" />
-      <File FileName="Assets\scripts\Zapytanie.cs" Line="18" Column="23" />
-      <File FileName="Assets\scripts\Slownik.cs" Line="19" Column="1" />
-      <File FileName="Assets\scripts\AnalizaZapytania.cs" Line="110" Column="5" />
+      <File FileName="Assets\scripts\GetText.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\Zapytanie.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\Slownik.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\AnalizaZapytania.cs" Line="29" Column="4" />
+      <File FileName="Assets\scripts\CYK.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\Production.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

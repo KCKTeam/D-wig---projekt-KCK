@@ -1,0 +1,14 @@
+﻿<Properties StartupItem="CYK\CYK.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CYK\Program.cs">
+    <Files>
+      <File FileName="CYK\Program.cs" Line="26" Column="4" />
+      <File FileName="CYK\Production.cs" Line="1" Column="1" />
+      <File FileName="..\..\..\Desktop\InteligentCrane\Dzwig---projekt-KCK\Crane\Assets\scripts\Zapytanie.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

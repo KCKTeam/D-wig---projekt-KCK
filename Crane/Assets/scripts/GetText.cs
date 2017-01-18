@@ -34,6 +34,7 @@ public class GetText : MonoBehaviour {
 		analiza.dodajZapytanie (nowe);
 		analiza.dodajSlownik (slownik);
 		analiza.znajdzTokeny ();
+		analiza.CKYstart ();
 		analiza.znajdzPolecenie ();
 
 	}

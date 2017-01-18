@@ -1,0 +1,4 @@
+C:\Users\Mikolaj\Documents\Projects\CYK\CYK\bin\Debug\CYK.exe
+C:\Users\Mikolaj\Documents\Projects\CYK\CYK\bin\Debug\CYK.pdb
+C:\Users\Mikolaj\Documents\Projects\CYK\CYK\obj\x86\Debug\CYK.exe
+C:\Users\Mikolaj\Documents\Projects\CYK\CYK\obj\x86\Debug\CYK.pdb
