@@ -134,10 +134,12 @@ public class AnalizaZapytania : MonoBehaviour{
 
 	public void znajdzPolecenie(){
 		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
+		zapytanie.trzymaB = true;
 
-		if (zapytanie.liczba_czasownikow == 1) {
-			Debug.Log ("Prosta akcja");
+		//Debug.Log(zapytanie.zaimki [0]);
 
+		if (zapytanie.liczba_czasownikow == 1 && zapytanie.obiekty_rodzaj.Count<=1 && zapytanie.sektory.Count<1) {
+			
 			if (zapytanie.obrocB && zapytanie.jednostkiB && zapytanie.liczba != 0) {
 				if (substrings [zapytanie.kierunek].Contains ("lew")) {
 					zapytanie.liczba = zapytanie.liczba * -1f;
@@ -179,8 +181,20 @@ public class AnalizaZapytania : MonoBehaviour{
 
 		}
 		
-			if (zapytanie.liczba_czasownikow > 1) {
-			Debug.Log ("Bardziej skomplikowana akcja");
+		else if (zapytanie.liczba_czasownikow == 1 && zapytanie.obiekty_rodzaj.Count==2) {
+			Debug.Log ("Przenoszę A obok B");
+		}
+
+		else if(zapytanie.liczba_czasownikow == 2 && zapytanie.obiekty_rodzaj.Count==2){
+			Debug.Log ("Podnoszę A i kładę obok B");
+		}
+
+		else if(zapytanie.czasownik_podB&&zapytanie.obiekty_rodzaj.Count==1&&zapytanie.sektory.Count==1){
+			Debug.Log ("Podnoszę i umieszczam w sektorze...");
+		}
+
+		else if(zapytanie.czasownik_opuB&&zapytanie.trzymaB&&zapytanie.sektory.Count==1){
+			Debug.Log ("Umieszczam trzymany obiekt w sektorze...");
 		}
 
 	}
