@@ -11,7 +11,7 @@ public class Slownik{
 	public string [] kierunki = {"lew", "praw", "przod", "przód", "tył", "dół", "gór"};
 	public string [] zaimki = {"obok" , "pomiędzy", "na"};
 	public string [] sektor = {"sektor", "krat", "pole", "pola"};
-
+	public string [] jednostki = {"metr", "stopn"};
 	public Slownik (){
 		}
 	}

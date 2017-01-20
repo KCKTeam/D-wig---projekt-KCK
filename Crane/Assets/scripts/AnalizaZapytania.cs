@@ -15,8 +15,8 @@ public class AnalizaZapytania : MonoBehaviour{
 
 	public void dodajZapytanie(Zapytanie doDodania){
 		zapytanie = doDodania;
-		substrings = zapytanie.getTekstZapytania ().Split (delimiter);
-		tokeny = new char[3];
+		substrings = zapytanie.getTekstZapytania ().ToLower().Split (delimiter);
+		tokeny = new char[10];
 	}
 
 	public void dodajSlownik(Slownik doDodania){
@@ -33,6 +33,7 @@ public class AnalizaZapytania : MonoBehaviour{
 					zapytanie.czasownik_podB = true;
 					zapytanie.czasownik_pod = index;
 					tokeny [index] = 'c';
+					zapytanie.liczba_czasownikow++;
 				}
 			}
 
@@ -42,8 +43,20 @@ public class AnalizaZapytania : MonoBehaviour{
 					zapytanie.czasownik_opuB = true;
 					zapytanie.czasownik_opu = index;
 					tokeny [index] = 'c';
+					zapytanie.liczba_czasownikow++;
 				}
 			}
+
+			//znajdowanie czasownika przesunięcia
+			for (int i = 0; i < slownik.czas_przesun.Length; i++) {
+				if (substring.Contains (slownik.czas_przesun[i])) {
+					zapytanie.czas_przesunB = true;
+					zapytanie.czas_przesun = index;
+					tokeny [index] = 'c';
+					zapytanie.liczba_czasownikow++;
+				}
+			}
+
 
 			//znajdowanie rodzajów
 			for (int i = 0; i < slownik.rodzaje.Length; i++) {
@@ -73,14 +86,7 @@ public class AnalizaZapytania : MonoBehaviour{
 					zapytanie.obrocB = true;
 					zapytanie.obroc = index;
 					tokeny [index] = 'c';
-				}
-			}
-
-			//znajdowanie słów przesunięcia
-			for (int i = 0; i < slownik.czas_przesun.Length; i++) {
-				if (substring.Contains (slownik.czas_przesun[i])) {
-					zapytanie.hakB = true;
-					zapytanie.hak = index;
+					zapytanie.liczba_czasownikow++;
 				}
 			}
 
@@ -108,10 +114,17 @@ public class AnalizaZapytania : MonoBehaviour{
 				}
 			}
 
+			//znajdowanie jednostek
+			for (int i = 0; i < slownik.jednostki.Length; i++) {
+				if (substring.Contains (slownik.jednostki[i])) {
+					zapytanie.jednostkiB = true;
+					zapytanie.jednostki = index;
+				}
+			}
+
 
 			index++;
 		}
-		Debug.Log (tokeny[0]);
 	}
 
 	public void CKYstart(){
@@ -120,13 +133,56 @@ public class AnalizaZapytania : MonoBehaviour{
 	}
 
 	public void znajdzPolecenie(){
-		if (zapytanie.obrocB && zapytanie.liczba != 0) {
-			if (substrings [zapytanie.kierunek].Contains ("lew")) {
-				zapytanie.liczba = zapytanie.liczba * -1f;
+		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
+
+		if (zapytanie.liczba_czasownikow == 1) {
+			Debug.Log ("Prosta akcja");
+
+			if (zapytanie.obrocB && zapytanie.jednostkiB && zapytanie.liczba != 0) {
+				if (substrings [zapytanie.kierunek].Contains ("lew")) {
+					zapytanie.liczba = zapytanie.liczba * -1f;
+				}
+				float kat = zapytanie.liczba;
+				StartCoroutine (CraneManager.Instance.rotation (kat));
 			}
-			float kat = zapytanie.liczba;
-			StartCoroutine(CraneManager.Instance.rotation(kat));
+			if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
+				Debug.Log ("Opuszczam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+			}
+
+			if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
+				Debug.Log ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+			}
+			if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 1) {
+				Debug.Log ("Podnoszę przedmiot o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+			}
+
+			if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 1) {
+				Debug.Log ("Opuszczam przedmiot o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+			}
+			if (zapytanie.czasownik_podB && zapytanie.obiekty_rodzaj.Count == 1) {
+				Debug.Log ("Podnoszę...");
+			}
+			if (zapytanie.czasownik_opuB && zapytanie.obiekty_rodzaj.Count == 1) {
+				Debug.Log ("Opuszczam...");
+			}
+
+			if (zapytanie.czas_przesunB && zapytanie.liczba != 0 && zapytanie.jednostkiB) {
+				float distance = zapytanie.liczba;
+				if (zapytanie.kierunekB) {
+					if (substrings [zapytanie.kierunek].Contains ("tył")) {
+						distance *= -1;
+						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
+					} else
+						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
+				}
+			}
+
 		}
+		
+			if (zapytanie.liczba_czasownikow > 1) {
+			Debug.Log ("Bardziej skomplikowana akcja");
+		}
+
 	}
 }
 
