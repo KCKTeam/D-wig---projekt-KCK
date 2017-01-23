@@ -33,11 +33,9 @@ public class GetText : MonoBehaviour {
 		Zapytanie nowe=new Zapytanie(text);
 		analiza.dodajZapytanie (nowe);
 		analiza.dodajSlownik (slownik);
-
-		analiza.dodajObiekty (obiekty);
-		analiza.uzupelnijKoloryRodzaje ();
-		//analiza.znajdzTokeny ();
-		//analiza.CKYstart ();
+		analiza.znajdzTokeny ();
+		//analiza.dodajObiekty (obiekty);
+		//analiza.uzupelnijKoloryRodzaje ();
 		analiza.znajdzPolecenie ();
 
 	}
