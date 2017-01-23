@@ -8,6 +8,7 @@ public class Zapytanie{
 	public bool czasownik_podB, czasownik_opuB, czas_przesunB;
 	public bool obrocB, kierunekB, hakB;
 	public bool trzymaB;                   // czy trzyma coś
+	public bool sektorB;
 	public List <int> obiekty_rodzaj= new List<int>();
 	public List <int> obiekty_kolor= new List<int>();
 	public List <int> zaimki= new List<int>();

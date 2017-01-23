@@ -22,11 +22,11 @@ public class AnalizaZapytania : MonoBehaviour{
 	public void dodajSlownik(Slownik doDodania){
 		slownik = doDodania;
 	}
-		
+
 	public void znajdzTokeny(){
 		int index = 0;
 		foreach (string substring in substrings) {
-			
+
 			//znajdowanie czasownika podnoszenia
 			for (int i = 0; i < slownik.czas_pod.Length; i++) {
 				if (substring.Contains (slownik.czas_pod [i])) {
@@ -80,6 +80,12 @@ public class AnalizaZapytania : MonoBehaviour{
 				tokeny [index] = 'l';
 			}
 
+			//znajdowanie sektora
+			if (Regex.IsMatch (substring, @"^[a-h]{1}[0-9]{1}$")) {
+				zapytanie.sektory.Add (index);
+				Debug.Log ("sektor " + substrings [index]);
+			}
+
 			//znajdowanie słów obrotu
 			for (int i = 0; i < slownik.czas_obrotu.Length; i++) {
 				if (substring.Contains (slownik.czas_obrotu[i])) {
@@ -111,6 +117,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < slownik.sektor.Length; i++) {
 				if (substring.Contains (slownik.sektor[i])) {
 					zapytanie.sektory.Add (index);
+					zapytanie.sektorB = true;
 				}
 			}
 
@@ -134,69 +141,135 @@ public class AnalizaZapytania : MonoBehaviour{
 
 	public void znajdzPolecenie(){
 		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
-		zapytanie.trzymaB = true;
+		zapytanie.trzymaB = false;
 
-		//Debug.Log(zapytanie.zaimki [0]);
+		// Pozostałe opcje
 
-		if (zapytanie.liczba_czasownikow == 1 && zapytanie.obiekty_rodzaj.Count<=1 && zapytanie.sektory.Count<1) {
-			
-			if (zapytanie.obrocB && zapytanie.jednostkiB && zapytanie.liczba != 0) {
-				if (substrings [zapytanie.kierunek].Contains ("lew")) {
-					zapytanie.liczba = zapytanie.liczba * -1f;
+		if (zapytanie.obrocB && zapytanie.jednostkiB && zapytanie.liczba != 0) {
+			if (substrings [zapytanie.kierunek].Contains ("lew")) {
+				zapytanie.liczba = zapytanie.liczba * -1f;
+			}
+			float kat = zapytanie.liczba;
+			StartCoroutine (CraneManager.Instance.rotation (kat));
+		}
+		else if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
+			Debug.Log ("Opuszczam hak na wysokość " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+			// wysokość(liczba);
+		}
+
+		else if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
+			Debug.Log ("Podnoszę hak na wysokość " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+			// wysokość(liczba);
+		}
+
+
+	
+
+		// dźwig nic nie trzyma
+		else if (!zapytanie.trzymaB) {
+			//2 czasowniki, bez sektora
+			if (zapytanie.czasownik_podB && zapytanie.czasownik_opuB && !zapytanie.sektorB) {
+				//0 przdmiotów np. Podnieś połóż
+				if (zapytanie.obiekty_rodzaj.Count == 0) {
+					Debug.Log ("Nie podałeś przedmiotu");
 				}
-				float kat = zapytanie.liczba;
-				StartCoroutine (CraneManager.Instance.rotation (kat));
+				//1 przedmiot np. Podnieś samochód i go odłóż
+				else if (zapytanie.obiekty_rodzaj.Count == 1) {
+					Debug.Log ("Podnosz i opuszczam przedmiot");
+					// podnieś(obiekt); połóż(obiekt);
+				}
+				//2 przedmioty np. Podnieś samochód i połóż go obok skrzynki
+				else if (zapytanie.obiekty_rodzaj.Count == 2) {
+					Debug.Log ("Podnoszę obiekt A i kładę obok B");
+					//podnieś(obiekt1); połóżObok(obiekt1,obiekt2);
+				}
 			}
-			if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
-				Debug.Log ("Opuszczam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+			//2 czasowniki z sektorem docelowym
+			else if (zapytanie.czasownik_podB && zapytanie.czasownik_opuB && zapytanie.sektorB) {
+				//0 przdmiotów np. Podnieś połóż B5
+				if (zapytanie.obiekty_rodzaj.Count == 0) {
+					Debug.Log ("Nie podałeś przedmiotu");
+				}
+				//1 przedmiot np. Podnieś czerwony samochód i połóż go w sektorze A3
+				else if (zapytanie.obiekty_rodzaj.Count == 1) {
+					Debug.Log ("Podnosz i opuszczam przedmiot w sektorze");
+					// podnieś(obiekt); połóżWSektorze(sektor)
+				}
+				//2 przedmioty np. Podnieś samochód i połóż go w sektorze a3 obok skrzynki
+				else if (zapytanie.obiekty_rodzaj.Count >= 2) {
+					Debug.Log ("Ta operacja jest dla mnie za trudna");
+				}
 			}
+			//1 czasowniki podnoszenia, bez sektora
+			else if (zapytanie.czasownik_podB && !zapytanie.sektorB) {
+				//0 przdmiotów np. Podnieś
+				if (zapytanie.obiekty_rodzaj.Count == 0) {
+					Debug.Log ("Nie podałeś przedmiotu");
+				}
+				//1 przedmiot np. Podnieś zielony samochód
+				else if (zapytanie.obiekty_rodzaj.Count == 1) {
+					Debug.Log ("Podnosz obiekt");
+					// podnieś(obiekt);
+				}
+				//2 przedmioty np. Podnieś zielony samochód leżący obok czarnej skrzynki
+				else if (zapytanie.obiekty_rodzaj.Count <= 2) {
+					Debug.Log ("Nie mam takiej funkcji");
+				}
+			}
+			//1 czasowniki podnoszenia, z sektorem np. Podnieś cokolwiek z sektora A5
+			else if (zapytanie.czasownik_podB && zapytanie.sektorB) {
+				//0, 1 przdmiot
+				if (zapytanie.obiekty_rodzaj.Count == 0 || zapytanie.obiekty_rodzaj.Count == 1) {
+					Debug.Log ("Podnosze obiekt z podanego sektora");
+					// podnieśZSektora(sektor);
+				}
+			}
+		}
 
-			if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
-				Debug.Log ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-			}
-			if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Podnoszę przedmiot o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-			}
 
-			if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Opuszczam przedmiot o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-			}
-			if (zapytanie.czasownik_podB && zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Podnoszę...");
-			}
-			if (zapytanie.czasownik_opuB && zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Opuszczam...");
-			}
 
-			if (zapytanie.czas_przesunB && zapytanie.liczba != 0 && zapytanie.jednostkiB) {
-				float distance = zapytanie.liczba;
-				if (zapytanie.kierunekB) {
-					if (substrings [zapytanie.kierunek].Contains ("tył")) {
-						distance *= -1;
-						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
-					} else
-						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
+
+		// dźwig coś trzyma
+			if (zapytanie.trzymaB) {
+				//2 czasowniki, bez sektora
+				if (zapytanie.czasownik_podB && zapytanie.czasownik_opuB && !zapytanie.sektorB) {
+					//0 przdmiotów
+					if (zapytanie.obiekty_rodzaj.Count == 0) {
+						Debug.Log ("Nie mam takiej funkcji");
+					}
+					//1,2 przedmioty np. połóż trzmany obiekt i podnieś samochód
+					else if (zapytanie.obiekty_rodzaj.Count == 1 || zapytanie.obiekty_rodzaj.Count == 2) {
+						Debug.Log ("Odkładam trzymany przedmiot A i podnosze B");
+						// połóż(); podnieś(obiekt)
+					}
+				}
+			//2 czasowniki, z sektorem
+			else if (zapytanie.czasownik_podB && zapytanie.czasownik_opuB && zapytanie.sektorB) {
+					//0 przdmiotów np. Odłóż co trzymasz i podnieś przedmiot z sektora B3
+					if (zapytanie.obiekty_rodzaj.Count == 0) {
+						Debug.Log ("Odkładam trzyman przedmiot A i podnoszę przedmiot B z podanego sektora");
+						//połóż(); podnieśZSektora();
+					}
+					//1,2 przedmioty np. Odłóż co trzymasz w sektorze B4 i podnieś samochód
+					else if (zapytanie.obiekty_rodzaj.Count == 1 || zapytanie.obiekty_rodzaj.Count == 2) {
+						Debug.Log ("Odkładam trzymany przedmiot A w sektorze i podnosze B");
+						// połóżwSektorze(sektor); podnieś(obiekt);
+					}
+				}
+			//1 czasowniki opuszczania, bez sektora np. Połóż 
+			else if (zapytanie.czasownik_opuB && !zapytanie.sektorB) {
+					Debug.Log ("Odkładam trzymany przedmiot");
+					//połóż();
+				}
+			//1 czasowniki opuszczania, z sektorem np. Odłóż skrzynkę w sektorze C3
+			else if (zapytanie.czasownik_opuB && zapytanie.sektorB) {
+					Debug.Log ("Odkładam trzymany przedmiot w sektorze");
+					//połóżWSektorze(sektor);
 				}
 			}
 
-		}
-		
-		else if (zapytanie.liczba_czasownikow == 1 && zapytanie.obiekty_rodzaj.Count==2) {
-			Debug.Log ("Przenoszę A obok B");
-		}
 
-		else if(zapytanie.liczba_czasownikow == 2 && zapytanie.obiekty_rodzaj.Count==2){
-			Debug.Log ("Podnoszę A i kładę obok B");
-		}
 
-		else if(zapytanie.czasownik_podB&&zapytanie.obiekty_rodzaj.Count==1&&zapytanie.sektory.Count==1){
-			Debug.Log ("Podnoszę i umieszczam w sektorze...");
-		}
-
-		else if(zapytanie.czasownik_opuB&&zapytanie.trzymaB&&zapytanie.sektory.Count==1){
-			Debug.Log ("Umieszczam trzymany obiekt w sektorze...");
-		}
 
 	}
 }
-
