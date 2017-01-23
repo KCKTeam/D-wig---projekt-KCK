@@ -22,7 +22,7 @@ public class CraneManager : MonoBehaviour {
 	public Transform Crane;
 
 	void Start(){
-		StartCoroutine (putUpDistance (-10f));
+		//StartCoroutine (opuscHak (-10f));
 	}
 
 	public IEnumerator rotation(float rotation){
@@ -45,7 +45,7 @@ public class CraneManager : MonoBehaviour {
 
 	public IEnumerator Lift(GameObject obiekt){
 		yield return StartCoroutine (rotation(Angle(obiekt)));
-		yield return StartCoroutine (Move (Distance (obiekt)));
+		yield return StartCoroutine (przesunProwadnice (Distance (obiekt)));
 		yield return StartCoroutine (lineDown(obiekt));
 		StartCoroutine (lineUp ());
 	}
@@ -80,20 +80,20 @@ public class CraneManager : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator putUpDistance(float distance){
+	public IEnumerator opuscHak(float distance){
 		float przesun = distance;
 		float time = 0.01f;
 		if (przesun < 0) {
-			float moveDistance = -0.1f;
-			while (przesun < 0f && lina.localScale.z>0) {
-				lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z + moveDistance);
+			float moveDistance = 0.1f;
+			while (przesun < 0f) {
+				lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z - moveDistance);
 				przesun += moveDistance;
 				yield return new WaitForSeconds (time);
 			}
-		} else {
+		}else {
 			float moveDistance = 0.1f;
-			while (przesun > 0f && lina.localScale.z>0) {
-				lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z + moveDistance);
+			while (przesun > 0f) {
+				lina.localScale = new Vector3 (lina.localScale.x, lina.localScale.y, lina.localScale.z+moveDistance);
 				przesun -= moveDistance;
 				yield return new WaitForSeconds (time);
 			}
@@ -167,7 +167,7 @@ public class CraneManager : MonoBehaviour {
 		return angle2*(-1);
 	}
 
-	IEnumerator Move(float distance){
+	public IEnumerator przesunProwadnice(float distance){
 		float time = 0.01f;
 		if (distance > 0) {
 			float moveDistance = 0.1f;

@@ -12,6 +12,7 @@ public class Zapytanie{
 	public List <int> obiekty_kolor= new List<int>();
 	public List <int> zaimki= new List<int>();
 	public List <int> sektory= new List<int>();
+	public bool sektorB;
 	public bool jednostkiB;
 
 	public int liczba_czasownikow;

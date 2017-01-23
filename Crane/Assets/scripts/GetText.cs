@@ -33,18 +33,21 @@ public class GetText : MonoBehaviour {
 		Zapytanie nowe=new Zapytanie(text);
 		analiza.dodajZapytanie (nowe);
 		analiza.dodajSlownik (slownik);
-		analiza.znajdzTokeny ();
+
+		analiza.dodajObiekty (obiekty);
+		analiza.uzupelnijKoloryRodzaje ();
+		//analiza.znajdzTokeny ();
 		//analiza.CKYstart ();
 		analiza.znajdzPolecenie ();
 
 	}
 		
-	void craneText(string text){
+	public void craneText(string text){
 		Text newText=Instantiate (craneResponse, TextContainer, worldPositionStays:false) as Text;
 		newText.text = text;
 	}
 
-	void myText(string text){
+	public void myText(string text){
 		Text newText=Instantiate (playerText, TextContainer, worldPositionStays:false) as Text;
 		newText.text = text;
 	}
