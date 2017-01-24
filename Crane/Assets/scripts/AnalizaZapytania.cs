@@ -8,21 +8,21 @@ public class AnalizaZapytania : MonoBehaviour{
 	Slownik slownik;
 	GameObject [] obiekty;
 	List <GameObject> findedObjects=new List<GameObject>();
+	List <string> dopytania = new List<string>();
 
 	string [] substrings;
-	char [] tokeny;
 	char delimiter = ' ';
 
 	string [] koloryNaScenie;
 	string [] rodzajeNaScenie;
 
 	public AnalizaZapytania (){
+		dopytania.Clear();
 	}
 
 	public void dodajZapytanie(Zapytanie doDodania){
 		zapytanie = doDodania;
 		substrings = zapytanie.getTekstZapytania ().ToLower().Split (delimiter);
-		tokeny = new char[10];
 	}
 
 	public void dodajSlownik(Slownik doDodania){
@@ -80,20 +80,13 @@ public class AnalizaZapytania : MonoBehaviour{
 
 	public void znajdzObiekty(){
 		podmienKoloryRodzaje ();
+
+		//zapytanie.trzymaB=CraneManager.Instance.checkJoint ();
+		zapytanie.trzymaB=false;
 	
 		int iloscRodzajow=zapytanie.obiekty_rodzaj.Count;
 		int iloscKolorow=zapytanie.obiekty_kolor.Count;
 		List <int> pozostaleIndexy=zapytanie.obiekty_rodzaj;
-
-		/*if (iloscRodzajow == iloscKolorow) {
-			for (int i=0; i<zapytanie.obiekty_rodzaj.Count;i++) {
-				if (Mathf.Abs (zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [i]) == 1) {
-					string rodzaj = substrings [zapytanie.obiekty_rodzaj [i]];
-					string kolor = substrings [zapytanie.obiekty_kolor [i]];
-					findedObjects [i] = znajdzNaScenie (rodzaj, kolor);
-				}
-			}
-		} */
 
 		/*Dla każdego rodzaju z listy szuka dopasowania koloru. 
 		Jeśli takowe znajduje, to do listy findedObjects dodaje
@@ -101,23 +94,44 @@ public class AnalizaZapytania : MonoBehaviour{
 		z listy pozostałych elementów index rodzaju, 
 		który został wykorzystany do znalezienia obiektu.
 		*/
-		for (int i = 0; i < zapytanie.obiekty_rodzaj.Count; i++) {
-			for (int j = 0; j < zapytanie.obiekty_kolor.Count; j++) {
-				if ((zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == 1) {
-					string rodzaj = substrings [zapytanie.obiekty_rodzaj [i]];
-					string kolor = substrings [zapytanie.obiekty_kolor [j]];
-					findedObjects.Add (znajdzNaScenie (rodzaj, kolor));
-					pozostaleIndexy.Remove(zapytanie.obiekty_rodzaj [i]);
+		
+		if (zapytanie.trzymaB) {
+			if (zapytanie.obiekty_rodzaj.Count == 2) {
+						Debug.Log ("Dwa obiekty. Dodaję trzymany obiekt do listy");
+						//findedObjects.Add (CraneManager.Instance.trzymanyObiekt()); //dodaje jako pierwszy trzymany obiekt
+				for (int i = zapytanie.obiekty_rodzaj.Count; i > 1; i--) {
+					Debug.Log ("Szukam obiektu");
+					for (int j = 0; j < zapytanie.obiekty_kolor.Count; j++) {
+						if ((zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == 1 || (zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == -1) {
+							string rodzaj = substrings [zapytanie.obiekty_rodzaj [i]];
+							string kolor = substrings [zapytanie.obiekty_kolor [j]];
+							findedObjects.Add (znajdzNaScenie (rodzaj, kolor));
+							pozostaleIndexy.Remove (zapytanie.obiekty_rodzaj [i]);
+						}
+					}
+				}
+			} else if (zapytanie.obiekty_rodzaj.Count == 1) {
+				Debug.Log ("Dodaję trzymany obiekt do listy");
+						//findedObjects.Add (CraneManager.Instance.trzymanyObiekt()); //dodaje trzymany obiekt do listy
+			}
+		} else {
+			for (int i = 0; i < zapytanie.obiekty_rodzaj.Count; i++) {
+				for (int j = 0; j < zapytanie.obiekty_kolor.Count; j++) {
+					if ((zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == 1 || (zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == -1) {
+						string rodzaj = substrings [zapytanie.obiekty_rodzaj [i]];
+						string kolor = substrings [zapytanie.obiekty_kolor [j]];
+						findedObjects.Add (znajdzNaScenie (rodzaj, kolor));
+						pozostaleIndexy.Remove (zapytanie.obiekty_rodzaj [i]);
+					}
 				}
 			}
-		}
 
-		/*
+			/*
 		 Wywołanie funkcji znajdzNaScenie dla każdego indeksu, który pozostał.
-		 Funkcja do napisania... jutro... bo jest 3:00 i już nie myślę... 
 		 */
-		for (int i = 0; i < pozostaleIndexy.Count; i++) {
-			znajdzNaScenie (substrings [pozostaleIndexy [i]]);
+			for (int i = 0; i < pozostaleIndexy.Count; i++) {
+				znajdzNaScenie (substrings [pozostaleIndexy [i]]);
+			}
 		}
 	}
 
@@ -133,7 +147,76 @@ public class AnalizaZapytania : MonoBehaviour{
 	}
 
 	GameObject znajdzNaScenie (string r){
-		return null;
+		GameObject znaleziony = null;
+		int takieSame = 0;
+		for (int i = 0; i < obiekty.Length; i++) {
+			if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (r)) {
+				takieSame++;
+				znaleziony = obiekty [i];
+			}
+		}
+		if (takieSame > 1) {
+			Debug.Log ("Więcej niż jeden tego rodzaju");
+			dopytania.Add (r);
+			return null;
+		} else {
+			Debug.Log ("Znalazłem " + znaleziony.GetComponent<objectProperties> ().kolor + znaleziony.GetComponent<objectProperties> ().rodzaj);
+			return znaleziony;
+		}
+
+	}
+
+	public void dopytaj(List <string> doSprawdzenia, string d){
+		string [] dopytanie = d.ToLower ().Split (' ');
+		tokenyDopytania (dopytanie);
+		if (zapytanie.twierdzenieB) {
+			Debug.Log ("Wybieram obiekt losowo");
+			int index = dopytania.Count - 1;
+			dopytania.RemoveAt (index);
+			zapytanie.twierdzenieB = false;
+		} else if (zapytanie.przeczenieB) {
+			Debug.Log ("Podaj kolor.");
+			zapytanie.przeczenieB = false;
+		} else if (zapytanie.kolorB) {
+			Debug.Log ("Wybrany kolor: " + dopytanie[zapytanie.kolor]);
+			int index = dopytania.Count - 1;
+			dopytania.RemoveAt (index);
+			zapytanie.kolorB = false;
+		}
+		else {
+			Debug.Log ("Znalazłem więcej niż jeden obiekt rodzaju: " + doSprawdzenia [0]);
+			Debug.Log ("Wybrać obiekt losowo?");
+		}
+		
+	}
+
+	public void tokenyDopytania(string [] dopytanie){
+		foreach (string substring in dopytanie) {
+			int index = 0;
+			for (int i = 0; i < slownik.twierdzenia.Length; i++) {
+				if (substring==slownik.twierdzenia [i]) {
+					zapytanie.twierdzenieB = true;
+				}
+			}
+
+			for (int i = 0; i < slownik.przeczenia.Length; i++) {
+				if (substring == slownik.przeczenia [i]) {
+					zapytanie.przeczenieB = true;
+				}
+			}
+
+			for (int i = 0; i < slownik.kolory.Length; i++) {
+				if (substring.Contains (slownik.kolory [i])) {
+					zapytanie.kolorB = true;
+					zapytanie.kolor = index;
+				}
+			}
+			index++;
+		}
+	}
+
+	public List <string> listaDopytan(){
+		return dopytania;
 	}
 
 /*	GameObject checkData(string rodzaj, string kolor){
@@ -175,7 +258,6 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.czas_pod [i])) {
 					zapytanie.czasownik_podB = true;
 					zapytanie.czasownik_pod = index;
-					tokeny [index] = 'c';
 					zapytanie.liczba_czasownikow++;
 				}
 			}
@@ -185,7 +267,6 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.czas_opu[i])) {
 					zapytanie.czasownik_opuB = true;
 					zapytanie.czasownik_opu = index;
-					tokeny [index] = 'c';
 					zapytanie.liczba_czasownikow++;
 				}
 			}
@@ -195,7 +276,6 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.czas_przesun[i])) {
 					zapytanie.czas_przesunB = true;
 					zapytanie.czas_przesun = index;
-					tokeny [index] = 'c';
 					zapytanie.liczba_czasownikow++;
 				}
 			}
@@ -205,7 +285,6 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < slownik.rodzaje.Length; i++) {
 				if (substring.Contains (slownik.rodzaje [i])) {
 					zapytanie.obiekty_rodzaj.Add (index);
-					tokeny [index] = 'r';
 				}
 			}
 
@@ -213,14 +292,12 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < slownik.kolory.Length; i++) {
 				if (substring.Contains (slownik.kolory [i])) {
 					zapytanie.obiekty_kolor.Add (index);
-					tokeny [index] = 'k';
 				}
 			}
 
 			//znajdowanie liczby
 			if (Regex.IsMatch (substring, @"^\d+$")) {
 				float.TryParse (substring, out zapytanie.liczba);
-				tokeny [index] = 'l';
 			}
 
 			//znajdowanie sektora
@@ -234,7 +311,6 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.czas_obrotu[i])) {
 					zapytanie.obrocB = true;
 					zapytanie.obroc = index;
-					tokeny [index] = 'c';
 					zapytanie.liczba_czasownikow++;
 				}
 			}
@@ -244,7 +320,6 @@ public class AnalizaZapytania : MonoBehaviour{
 				if (substring.Contains (slownik.kierunki[i])) {
 					zapytanie.kierunekB = true;
 					zapytanie.kierunek = index;
-					tokeny [index] = 'j';
 				}
 			}
 
@@ -252,7 +327,6 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < slownik.zaimki.Length; i++) {
 				if (substring.Contains (slownik.zaimki[i])) {
 					zapytanie.zaimki.Add (index);
-					tokeny [index] = 'z';
 				}
 			}
 
@@ -279,7 +353,7 @@ public class AnalizaZapytania : MonoBehaviour{
 
 	public void znajdzPolecenie(){
 		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
-		zapytanie.trzymaB = false;
+		zapytanie.trzymaB = true;
 
 		// Pozostałe opcje
 

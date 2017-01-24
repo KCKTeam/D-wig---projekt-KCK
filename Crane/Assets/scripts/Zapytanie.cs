@@ -15,6 +15,8 @@ public class Zapytanie{
 	public List <int> sektory= new List<int>();
 	public bool jednostkiB;
 
+	public bool twierdzenieB, przeczenieB, kolorB;
+
 	public int liczba_czasownikow;
 	public int czasownik_pod, czasownik_opu, czas_przesun;
 	public int obroc, kierunek, hak;
@@ -22,6 +24,7 @@ public class Zapytanie{
 	public int sektor_z, sektor_do;
 	public int trzyma;
 	public int jednostki;
+	public int kolor;
 
 	public Zapytanie (string text){
 		tekstZapytania = text;

@@ -207,4 +207,12 @@ public class CraneManager : MonoBehaviour {
 		bool joint = !(hak.GetChild (0).GetComponent<FixedJoint> ().connectedBody == null);
 		return joint;
 	}
+
+	public GameObject trzymanyObiekt(){
+		if (checkJoint()) {
+			GameObject trzymany=hak.GetChild (0).GetComponent<FixedJoint> ().connectedBody.gameObject;
+			return trzymany;
+		} else
+			return null;
+	}
 }

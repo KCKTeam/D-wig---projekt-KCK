@@ -12,6 +12,8 @@ public class Slownik{
 	public string [] zaimki = {"obok" , "pomiędzy", "na"};
 	public string [] sektor = {"sektor", "krat", "pole", "pola"};
 	public string [] jednostki = {"metr", "stopn"};
+	public string [] twierdzenia = {"tak", "t", "oczywiście", "owszem", "pewnie"};
+	public string [] przeczenia = {"nie"};
 	public Slownik (){
 		}
 	}

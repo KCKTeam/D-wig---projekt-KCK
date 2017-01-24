@@ -14,15 +14,18 @@ public class GetText : MonoBehaviour {
 
 	Slownik slownik=new Slownik();
 	AnalizaZapytania analiza;
+	Zapytanie nowe;
 //	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
 
 	InputField wejscie;
+	List <string> dopytania=new List<string>();
 
 	void Start(){
 		//wczytanie wszystkich obiektów do tablicy
 		obiekty = GameObject.FindGameObjectsWithTag ("obiekt");
 		wejscie = GetComponent<InputField> ();
 		analiza = gameObject.AddComponent (typeof(AnalizaZapytania)) as AnalizaZapytania;
+		dopytania.Clear ();
 	}
 
 	public void text(){
@@ -30,16 +33,26 @@ public class GetText : MonoBehaviour {
 		myText(text); //wyswietla w oknie gry tekst wpisany przez uzytkownika
 		wejscie.text="";
 
-		Zapytanie nowe=new Zapytanie(text);
-		analiza.dodajObiekty (obiekty);
-		analiza.dodajZapytanie (nowe);
-		analiza.dodajSlownik (slownik);
-		analiza.znajdzTokeny ();
+		dopytania = analiza.listaDopytan ();
 
-		analiza.znajdzObiekty ();
-		//analiza.uzupelnijKoloryRodzaje ();
-		analiza.znajdzPolecenie ();
+		if (dopytania.Count > 0) {
+			analiza.dopytaj (dopytania, text);
+		} else {
+			nowe = new Zapytanie (text);
+			analiza.dodajObiekty (obiekty);
+			analiza.dodajZapytanie (nowe);
+			analiza.dodajSlownik (slownik);
 
+			analiza.znajdzTokeny ();
+			analiza.znajdzObiekty ();
+
+			if (dopytania.Count > 0) {
+				analiza.dopytaj (dopytania, text);
+			} else {
+				//analiza.uzupelnijKoloryRodzaje ();
+				analiza.znajdzPolecenie ();
+			}
+		}
 	}
 		
 	public void craneText(string text){
