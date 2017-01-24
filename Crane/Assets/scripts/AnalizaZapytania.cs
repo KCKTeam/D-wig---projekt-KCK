@@ -1,11 +1,13 @@
 ﻿using System;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 public class AnalizaZapytania : MonoBehaviour{
 	Zapytanie zapytanie;
 	Slownik slownik;
 	GameObject [] obiekty;
+	List <GameObject> findedObjects=new List<GameObject>();
 
 	string [] substrings;
 	char [] tokeny;
@@ -30,7 +32,7 @@ public class AnalizaZapytania : MonoBehaviour{
 	public void dodajObiekty(GameObject [] doDodania){
 		obiekty = doDodania;
 	}
-
+	/*
 	public void uzupelnijKoloryRodzaje(){
 		koloryNaScenie=new string[obiekty.Length];
 		rodzajeNaScenie=new string[obiekty.Length];
@@ -56,11 +58,113 @@ public class AnalizaZapytania : MonoBehaviour{
 			}
 			//Debug.Log (rodzajeNaScenie [i]);
 		}
+	}*/
+	public void podmienKoloryRodzaje(){
+		for(int i=0;i< zapytanie.obiekty_rodzaj.Count;i++){
+			for (int j = 0; j < slownik.kolory.Length; j++) {
+					if (substrings[zapytanie.obiekty_rodzaj [i]].Contains(slownik.rodzaje[j])) {
+					substrings[zapytanie.obiekty_rodzaj [i]] = slownik.rodzaje [j];
+				}
+			}
+		}
+
+		for(int i=0;i< zapytanie.obiekty_kolor.Count;i++){
+			for (int j = 0; j < slownik.kolory.Length; j++) {
+				if (substrings[zapytanie.obiekty_kolor [i]].Contains(slownik.kolory[j])) {
+					substrings[zapytanie.obiekty_kolor [i]] = slownik.kolory [j];
+				}
+			}
+		}
 	}
+		
 
 	public void znajdzObiekty(){
+		podmienKoloryRodzaje ();
+	
+		int iloscRodzajow=zapytanie.obiekty_rodzaj.Count;
+		int iloscKolorow=zapytanie.obiekty_kolor.Count;
+		List <int> pozostaleIndexy=zapytanie.obiekty_rodzaj;
 
+		/*if (iloscRodzajow == iloscKolorow) {
+			for (int i=0; i<zapytanie.obiekty_rodzaj.Count;i++) {
+				if (Mathf.Abs (zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [i]) == 1) {
+					string rodzaj = substrings [zapytanie.obiekty_rodzaj [i]];
+					string kolor = substrings [zapytanie.obiekty_kolor [i]];
+					findedObjects [i] = znajdzNaScenie (rodzaj, kolor);
+				}
+			}
+		} */
+
+		/*Dla każdego rodzaju z listy szuka dopasowania koloru. 
+		Jeśli takowe znajduje, to do listy findedObjects dodaje
+		obiekt znaleziony po rodzaju i kolorze. Usuwa również 
+		z listy pozostałych elementów index rodzaju, 
+		który został wykorzystany do znalezienia obiektu.
+		*/
+		for (int i = 0; i < zapytanie.obiekty_rodzaj.Count; i++) {
+			for (int j = 0; j < zapytanie.obiekty_kolor.Count; j++) {
+				if ((zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == 1) {
+					string rodzaj = substrings [zapytanie.obiekty_rodzaj [i]];
+					string kolor = substrings [zapytanie.obiekty_kolor [j]];
+					findedObjects.Add (znajdzNaScenie (rodzaj, kolor));
+					pozostaleIndexy.Remove(zapytanie.obiekty_rodzaj [i]);
+				}
+			}
+		}
+
+		/*
+		 Wywołanie funkcji znajdzNaScenie dla każdego indeksu, który pozostał.
+		 Funkcja do napisania... jutro... bo jest 3:00 i już nie myślę... 
+		 */
+		for (int i = 0; i < pozostaleIndexy.Count; i++) {
+			znajdzNaScenie (substrings [pozostaleIndexy [i]]);
+		}
 	}
+
+	GameObject znajdzNaScenie(string r, string k){
+		GameObject znaleziony = null;
+		for (int i = 0; i < obiekty.Length; i++) {
+			if(obiekty[i].GetComponent<objectProperties>().kolor.Contains(k)&&obiekty[i].GetComponent<objectProperties>().rodzaj.Contains(r)){
+				znaleziony = obiekty [i];
+				Debug.Log ("Znalazłem " + obiekty[i].GetComponent<objectProperties>().kolor + obiekty[i].GetComponent<objectProperties>().rodzaj);
+			}
+		}
+		return znaleziony;
+	}
+
+	GameObject znajdzNaScenie (string r){
+		return null;
+	}
+
+/*	GameObject checkData(string rodzaj, string kolor){
+		GameObject obiekt;
+		if (rodzaj == "brak") {
+			string text = "Nie znaleziono obiektu.";
+			craneText (text);
+		}else if (kolor == "brak") {
+			int ile = 0;
+			for (int i = 0; i < obiekty.Length; i++) {
+				if (obiekty [i].GetComponent<objectProperties> ().rodzaj.Contains (rodzaj)) {
+					kolor = obiekty [i].GetComponent<objectProperties> ().kolor;
+					ile++;
+				}
+			}
+			for (int i = 0; i < kolory.Length; i++) {
+				if (kolor.Contains (kolory [i])) {
+					kolor = kolory [i];
+				}
+			}
+			if (ile > 1) {
+				string text = "Znalazłem więcej niż jeden obiekt danego typu. Wprowadź kolor.";
+				craneText (text);
+				znajdzKolor=true;
+				kolorG = "brak";
+				rodzajG = rodzaj;
+			}
+		}
+		obiekt=findGameObject (rodzaj, kolor);
+		return obiekt;
+	}*/
 
 	public void znajdzTokeny(){
 		int index = 0;
@@ -171,11 +275,6 @@ public class AnalizaZapytania : MonoBehaviour{
 
 			index++;
 		}
-	}
-
-	public void CKYstart(){
-		CKY parserCYK = new CKY ();
-		parserCYK.Parsowanie (tokeny);
 	}
 
 	public void znajdzPolecenie(){

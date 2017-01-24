@@ -31,10 +31,12 @@ public class GetText : MonoBehaviour {
 		wejscie.text="";
 
 		Zapytanie nowe=new Zapytanie(text);
+		analiza.dodajObiekty (obiekty);
 		analiza.dodajZapytanie (nowe);
 		analiza.dodajSlownik (slownik);
 		analiza.znajdzTokeny ();
-		//analiza.dodajObiekty (obiekty);
+
+		analiza.znajdzObiekty ();
 		//analiza.uzupelnijKoloryRodzaje ();
 		analiza.znajdzPolecenie ();
 
