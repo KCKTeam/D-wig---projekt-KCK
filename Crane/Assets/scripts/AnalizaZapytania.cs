@@ -86,7 +86,7 @@ public class AnalizaZapytania : MonoBehaviour{
 	
 		int iloscRodzajow=zapytanie.obiekty_rodzaj.Count;
 		int iloscKolorow=zapytanie.obiekty_kolor.Count;
-		List <int> pozostaleIndexy=zapytanie.obiekty_rodzaj;
+		List <int> pozostaleIndexy=new List<int>(zapytanie.obiekty_rodzaj);
 
 		/*Dla każdego rodzaju z listy szuka dopasowania koloru. 
 		Jeśli takowe znajduje, to do listy findedObjects dodaje
@@ -94,27 +94,7 @@ public class AnalizaZapytania : MonoBehaviour{
 		z listy pozostałych elementów index rodzaju, 
 		który został wykorzystany do znalezienia obiektu.
 		*/
-		
-		if (zapytanie.trzymaB) {
-			if (zapytanie.obiekty_rodzaj.Count == 2) {
-						Debug.Log ("Dwa obiekty. Dodaję trzymany obiekt do listy");
-						//findedObjects.Add (CraneManager.Instance.trzymanyObiekt()); //dodaje jako pierwszy trzymany obiekt
-				for (int i = zapytanie.obiekty_rodzaj.Count; i > 1; i--) {
-					Debug.Log ("Szukam obiektu");
-					for (int j = 0; j < zapytanie.obiekty_kolor.Count; j++) {
-						if ((zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == 1 || (zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == -1) {
-							string rodzaj = substrings [zapytanie.obiekty_rodzaj [i]];
-							string kolor = substrings [zapytanie.obiekty_kolor [j]];
-							findedObjects.Add (znajdzNaScenie (rodzaj, kolor));
-							pozostaleIndexy.Remove (zapytanie.obiekty_rodzaj [i]);
-						}
-					}
-				}
-			} else if (zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Dodaję trzymany obiekt do listy");
-						//findedObjects.Add (CraneManager.Instance.trzymanyObiekt()); //dodaje trzymany obiekt do listy
-			}
-		} else {
+
 			for (int i = 0; i < zapytanie.obiekty_rodzaj.Count; i++) {
 				for (int j = 0; j < zapytanie.obiekty_kolor.Count; j++) {
 					if ((zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == 1 || (zapytanie.obiekty_rodzaj [i] - zapytanie.obiekty_kolor [j]) == -1) {
@@ -132,7 +112,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			for (int i = 0; i < pozostaleIndexy.Count; i++) {
 				znajdzNaScenie (substrings [pozostaleIndexy [i]]);
 			}
-		}
+		
 	}
 
 	GameObject znajdzNaScenie(string r, string k){
@@ -168,12 +148,14 @@ public class AnalizaZapytania : MonoBehaviour{
 
 	public void dopytaj(List <string> doSprawdzenia, string d){
 		string [] dopytanie = d.ToLower ().Split (' ');
+		dopytania = doSprawdzenia;
 		tokenyDopytania (dopytanie);
 		if (zapytanie.twierdzenieB) {
 			Debug.Log ("Wybieram obiekt losowo");
-			int index = dopytania.Count - 1;
-			dopytania.RemoveAt (index);
+			dopytania.RemoveAt (0);
 			zapytanie.twierdzenieB = false;
+			if (dopytania.Count > 0)
+				dopytaj(dopytania, "");
 		} else if (zapytanie.przeczenieB) {
 			Debug.Log ("Podaj kolor.");
 			zapytanie.przeczenieB = false;
@@ -182,11 +164,17 @@ public class AnalizaZapytania : MonoBehaviour{
 			int index = dopytania.Count - 1;
 			dopytania.RemoveAt (index);
 			zapytanie.kolorB = false;
+			if (dopytania.Count > 0)
+				dopytaj(dopytania, "");
 		}
 		else {
 			Debug.Log ("Znalazłem więcej niż jeden obiekt rodzaju: " + doSprawdzenia [0]);
 			Debug.Log ("Wybrać obiekt losowo?");
 		}
+
+		//jeśli dopytał o wszystko to musi uruchomić znajdowanie polecenia z tego miejsca
+		if (dopytania.Count == 0)
+			znajdzPolecenie ();
 		
 	}
 
@@ -353,7 +341,9 @@ public class AnalizaZapytania : MonoBehaviour{
 
 	public void znajdzPolecenie(){
 		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
-		zapytanie.trzymaB = true;
+		zapytanie.trzymaB = false;
+
+		Debug.Log (zapytanie.obiekty_rodzaj.Count);
 
 		// Pozostałe opcje
 

@@ -49,6 +49,7 @@ public class GetText : MonoBehaviour {
 			if (dopytania.Count > 0) {
 				analiza.dopytaj (dopytania, text);
 			} else {
+				Debug.Log ("Polecenie");
 				//analiza.uzupelnijKoloryRodzaje ();
 				analiza.znajdzPolecenie ();
 			}
