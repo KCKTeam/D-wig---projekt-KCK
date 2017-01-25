@@ -1,16 +1,13 @@
 ﻿using System;
 
-public class Dopytanie
-{
-
-	string kolor;
-	string rodzaj;
-
-	public Dopytanie (){
-	}
-
-	public Dopytanie(string r){
+public class Dopytanie{
+	public string rodzaj;
+	public int index;
+	public Dopytanie (string r, int i)
+	{
 		rodzaj = r;
+		index = i;
 	}
+
 }
 

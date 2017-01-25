@@ -18,14 +18,12 @@ public class GetText : MonoBehaviour {
 //	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
 
 	InputField wejscie;
-	List <string> dopytania=new List<string>();
 
 	void Start(){
 		//wczytanie wszystkich obiektów do tablicy
 		obiekty = GameObject.FindGameObjectsWithTag ("obiekt");
 		wejscie = GetComponent<InputField> ();
 		analiza = gameObject.AddComponent (typeof(AnalizaZapytania)) as AnalizaZapytania;
-		dopytania.Clear ();
 	}
 
 	public void text(){
@@ -33,10 +31,9 @@ public class GetText : MonoBehaviour {
 		myText(text); //wyswietla w oknie gry tekst wpisany przez uzytkownika
 		wejscie.text="";
 
-		dopytania = analiza.listaDopytan ();
-
-		if (dopytania.Count > 0) {
-			analiza.dopytaj (dopytania, text);
+		int iloscDopytan = analiza.iloscDopytan ();
+		if (iloscDopytan > 0) {
+			analiza.dopytaj (text);
 		} else {
 			nowe = new Zapytanie (text);
 			analiza.dodajObiekty (obiekty);
@@ -46,10 +43,10 @@ public class GetText : MonoBehaviour {
 			analiza.znajdzTokeny ();
 			analiza.znajdzObiekty ();
 
-			if (dopytania.Count > 0) {
-				analiza.dopytaj (dopytania, text);
+			iloscDopytan = analiza.iloscDopytan ();
+			if (iloscDopytan > 0) {
+				analiza.dopytaj (text);
 			} else {
-				Debug.Log ("Polecenie");
 				//analiza.uzupelnijKoloryRodzaje ();
 				analiza.znajdzPolecenie ();
 			}
