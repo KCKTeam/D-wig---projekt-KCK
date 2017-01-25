@@ -134,15 +134,22 @@ public class AnalizaZapytania : MonoBehaviour{
 		}
 			
 		int g=0;
-		while (dopytania.Count > 0) {
+		int k=dopytania.Count;
+		while (k > 0) {
+			
+			Debug.Log ("Ilość obiektów: "+findedObjects.Length);
+
 			findedObjects[dopytania[g].index]=znajdzNaScenie (dopytania[g].rodzaj, dopytania[g].index);
 
-			if (findedObjects [dopytania [g].index ]!= null) {
+			if (findedObjects [dopytania [g].index] != null) {
 				dopytania.RemoveAt (g);
 				Debug.Log ("Usuwam znaleziony");
-				g--;
+			} else {
+				g++;
 			}
-			g++;
+
+			k--;
+
 		}
 		/*
 		for (int i = 0; i < iloscDopytan; i++) {

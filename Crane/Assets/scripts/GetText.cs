@@ -45,7 +45,7 @@ public class GetText : MonoBehaviour {
 
 			iloscDopytan = analiza.iloscDopytan ();
 			if (iloscDopytan > 0) {
-				analiza.dopytaj (text);
+				analiza.dopytaj ("abcdefghijkl");
 			} else {
 				//analiza.uzupelnijKoloryRodzaje ();
 				analiza.znajdzPolecenie ();
