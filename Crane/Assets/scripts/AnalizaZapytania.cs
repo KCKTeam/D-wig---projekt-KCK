@@ -82,9 +82,7 @@ public class AnalizaZapytania : MonoBehaviour{
 
 		//zapytanie.trzymaB=CraneManager.Instance.checkJoint ();
 		zapytanie.trzymaB=false;
-	
-		int iloscRodzajow=zapytanie.obiekty_rodzaj.Count;
-		int iloscKolorow=zapytanie.obiekty_kolor.Count;
+
 		List <int> pozostaleIndexy=new List<int>(zapytanie.obiekty_rodzaj);
 		findedObjects=new GameObject[zapytanie.obiekty_rodzaj.Count];
 
@@ -151,15 +149,6 @@ public class AnalizaZapytania : MonoBehaviour{
 			k--;
 
 		}
-		/*
-		for (int i = 0; i < iloscDopytan; i++) {
-			Debug.Log (dopytania[i].rodzaj + dopytania[i].index);
-			findedObjects[dopytania[i].index]=znajdzNaScenie (dopytania[i].rodzaj, dopytania[i].index);
-			if (findedObjects [dopytania [i].index ]!= null) {
-				dopytania.RemoveAt (0);
-				Debug.Log ("Usuwam znaleziony");
-			}
-		}*/
 	}
 
 	GameObject znajdzNaScenie(string r, string k){
@@ -251,7 +240,6 @@ public class AnalizaZapytania : MonoBehaviour{
 			}
 			int indexWylosowanego = UnityEngine.Random.Range (0, doWylosowania.Count);
 			return doWylosowania[indexWylosowanego];
-			doWylosowania.Clear ();
 		}
 	}
 
@@ -394,87 +382,45 @@ public class AnalizaZapytania : MonoBehaviour{
 		for (int i = 0; i < findedObjects.Length; i++) {
 			Debug.Log (findedObjects[i].GetComponent<objectProperties> ().kolor + findedObjects[i].GetComponent<objectProperties> ().rodzaj);
 		}
-
-		// Pozostałe opcje
-
-		/*if (zapytanie.obrocB && zapytanie.jednostkiB && zapytanie.liczba != 0) {
-			if (substrings [zapytanie.kierunek].Contains ("lew")) {
-				zapytanie.liczba = zapytanie.liczba * -1f;
-			}
-			float kat = zapytanie.liczba;
-			StartCoroutine (CraneManager.Instance.rotation (kat));
-		}
-		else if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
-			Debug.Log ("Opuszczam hak na wysokość " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-			// wysokość(liczba);
-		}
-
-		else if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
-			Debug.Log ("Podnoszę hak na wysokość " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-			// wysokość(liczba);
-		}*/
-
-		if (zapytanie.liczba_czasownikow == 1 && zapytanie.obiekty_rodzaj.Count <= 1 && zapytanie.sektory.Count < 1) {
-
-			if (zapytanie.obrocB && zapytanie.jednostkiB && zapytanie.liczba != 0) {
-				if (substrings [zapytanie.kierunek].Contains ("lew")) {
-					zapytanie.liczba = zapytanie.liczba * -1f;
+			
+		// liczba i jednostki
+		if (zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.liczba_czasownikow > 0) {
+			float distance = zapytanie.liczba;
+			// przesuwanie haka np. Przesuń hak o 4 metry w tył
+			if (zapytanie.kierunekB) {
+				// hak w tył
+				if (substrings [zapytanie.kierunek].Contains ("tył")) {
+					distance *= -1;
+					Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
+					StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba * -1f));
 				}
-				float kat = zapytanie.liczba;
-				StartCoroutine (CraneManager.Instance.rotation (kat));
-			}
-			if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
-				Debug.Log ("Opuszczam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-
-				StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba)); //funkcja dźwigu
-			}
-
-			if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 0) {
-				Debug.Log ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-
-				StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba * -1f)); //funkcja dzwigu
-			}
-			if (zapytanie.czasownik_podB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Podnoszę przedmiot o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-			}
-
-			if (zapytanie.czasownik_opuB && zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Opuszczam przedmiot o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-			}
-			if (zapytanie.czasownik_podB && zapytanie.obiekty_rodzaj.Count == 1 && !zapytanie.jednostkiB) {
-				Debug.Log ("Podnoszę...");
-			}
-			if (zapytanie.czasownik_opuB && zapytanie.obiekty_rodzaj.Count == 1 && !zapytanie.jednostkiB) {
-				Debug.Log ("Opuszczam...");
-			}
-
-			if (zapytanie.czas_przesunB && zapytanie.liczba != 0 && zapytanie.jednostkiB) {
-				float distance = zapytanie.liczba;
-				if (zapytanie.kierunekB) {
-					if (substrings [zapytanie.kierunek].Contains ("tył")) {
-						distance *= -1;
-						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
-
-						StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba * -1f)); //funkcja dźwigu
-					} else if (substrings [zapytanie.kierunek].Contains ("przód") || substrings [zapytanie.kierunek].Contains ("przod")) {
-						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
-
-						StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba)); //funkcja dźwigu
-					} else if (substrings [zapytanie.kierunek].Contains ("dół")) {
-						distance *= -1;
-						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w dół");
-
-						StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba)); //funkcja dźwigu
-					} else if (substrings [zapytanie.kierunek].Contains ("gór")) {
-						Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w górę");
-
-						StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba * -1f)); //funkcja dźwigu
-					}
-				} else
+				// hak w przód
+				else if (substrings [zapytanie.kierunek].Contains ("przód") || substrings [zapytanie.kierunek].Contains ("przod")) {
 					Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
+					StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba)); //funkcja dźwigu
+				}
+				// obracanie dźwigu np. Obróć dźwig o 50 stopni w lewo
+				else if (zapytanie.obrocB) {
+					if (substrings [zapytanie.kierunek].Contains ("lew")) {
+						distance = distance * -1f;
+					}
+					StartCoroutine (CraneManager.Instance.rotation (distance));
+				}
 			}
 
+			// opuszczanie liny
+			else if (zapytanie.czasownik_opuB || zapytanie.czasownik_podB) {
+				Debug.Log ("Weszłem");
+				if (zapytanie.czasownik_opuB) {
+					Debug.Log ("Opuszczam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+					StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba));
+				} else if (zapytanie.czasownik_podB) {
+					Debug.Log ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+					StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba * -1f));  
+				}
+			}
 		}
+
 
 		// dźwig nic nie trzyma
 		else if (!zapytanie.trzymaB) {
@@ -537,9 +483,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			}
 		}
 
-
-
-
+	
 		// dźwig coś trzyma
 		if (zapytanie.trzymaB) {
 			//2 czasowniki, bez sektora
@@ -576,6 +520,10 @@ public class AnalizaZapytania : MonoBehaviour{
 			else if (zapytanie.czasownik_opuB && zapytanie.sektorB) {
 				Debug.Log ("Odkładam trzymany przedmiot w sektorze");
 				//połóżWSektorze(sektor);
+			}
+			else if (zapytanie.czasownik_opuB && !zapytanie.sektorB && zapytanie.obiekty_rodzaj.Count == 1) {
+				Debug.Log ("Odkładam trzymany przedmiot obok podanego");
+				//połóżObok();
 			}
 		}
 
