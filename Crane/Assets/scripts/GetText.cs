@@ -17,13 +17,14 @@ public class GetText : MonoBehaviour {
 	AnalizaZapytania analiza;
 	Zapytanie nowe;
 
-//	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
-
 	InputField wejscie;
+	public Transform grupaObiektow;
 
+	void Awake(){
+		obiekty = GameObject.FindGameObjectsWithTag ("obiekt");
+	}
 	void Start(){
 		//wczytanie wszystkich obiektów do tablicy
-		obiekty = GameObject.FindGameObjectsWithTag ("obiekt");
 		wejscie = GetComponent<InputField> ();
 		analiza = gameObject.AddComponent (typeof(AnalizaZapytania)) as AnalizaZapytania;
 	}

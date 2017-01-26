@@ -389,10 +389,6 @@ public class AnalizaZapytania : MonoBehaviour{
 	public void znajdzPolecenie(){
 		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
 
-		for (int i = 0; i < findedObjects.Length; i++) {
-			Debug.Log (findedObjects[i].GetComponent<objectProperties> ().kolor + findedObjects[i].GetComponent<objectProperties> ().rodzaj);
-		}
-
 		// liczba i jednostki
 		if (zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.liczba_czasownikow > 0) {
 			float distance = zapytanie.liczba;
