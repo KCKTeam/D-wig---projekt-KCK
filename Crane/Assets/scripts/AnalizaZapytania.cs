@@ -361,13 +361,38 @@ public class AnalizaZapytania : MonoBehaviour{
 		}
 	}
 
+	bool sprawdzProwadnice(float przesuniecie){
+		float aktualnaPozycja=CraneManager.Instance.prowadnicaPosition ();
+		if ((aktualnaPozycja + przesuniecie) > 40 || (aktualnaPozycja + przesuniecie) < 4) {
+			CraneManager.Instance.craneText ("Wprowadzono zbyt wielką wartość. Przesuwam do skrajnej pozycji");
+			return true;
+		}else 
+			return false;
+	}
+
+	bool sprawdzLine(float przesuniecie){
+		float dodatek;
+
+		if (CraneManager.Instance.checkJoint ()) {
+			dodatek = CraneManager.Instance.trzymanyObiekt ().GetComponent<BoxCollider> ().size.y;
+		} else {
+			dodatek = 0f;
+		}
+		float aktualnaSkala = CraneManager.Instance.linaPosition ();
+		if ((aktualnaSkala + przesuniecie + dodatek) > 45 || (aktualnaSkala + przesuniecie) < 1) {
+			CraneManager.Instance.craneText ("Wprowadzono zbyt wielką wartość. Przesuwam do skrajnej pozycji");
+			return true;
+		}else 
+			return false;
+	
+	}
 	public void znajdzPolecenie(){
 		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
 
 		for (int i = 0; i < findedObjects.Length; i++) {
 			Debug.Log (findedObjects[i].GetComponent<objectProperties> ().kolor + findedObjects[i].GetComponent<objectProperties> ().rodzaj);
 		}
-			
+
 		// liczba i jednostki
 		if (zapytanie.liczba != 0 && zapytanie.jednostkiB && zapytanie.liczba_czasownikow > 0) {
 			float distance = zapytanie.liczba;
@@ -376,13 +401,23 @@ public class AnalizaZapytania : MonoBehaviour{
 				// hak w tył
 				if (substrings [zapytanie.kierunek].Contains ("tył")) {
 					distance *= -1;
-					CraneManager.Instance.craneText ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
-					StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba * -1f));
+					if (sprawdzProwadnice(distance)) {
+						distance=(CraneManager.Instance.prowadnicaPosition ()*-1f)+4f;
+						StartCoroutine (CraneManager.Instance.przesunProwadnice (distance));
+					} else {
+						CraneManager.Instance.craneText ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
+						StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba * -1f));
+					}
 				}
 				// hak w przód
 				else if (substrings [zapytanie.kierunek].Contains ("przód") || substrings [zapytanie.kierunek].Contains ("przod")) {
-					CraneManager.Instance.craneText ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
-					StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba)); //funkcja dźwigu
+					if (sprawdzProwadnice(distance)) {
+						distance=40f-CraneManager.Instance.prowadnicaPosition();
+						StartCoroutine (CraneManager.Instance.przesunProwadnice (distance));
+					} else {
+						CraneManager.Instance.craneText ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
+						StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba));
+					}
 				}
 				// obracanie dźwigu np. Obróć dźwig o 50 stopni w lewo
 				else if (zapytanie.obrocB) {
@@ -400,11 +435,22 @@ public class AnalizaZapytania : MonoBehaviour{
 			// opuszczanie liny
 			else if (zapytanie.czasownik_opuB || zapytanie.czasownik_podB) {
 				if (zapytanie.czasownik_opuB) {
+					if(sprawdzLine(zapytanie.liczba)){
+						distance=40f-CraneManager.Instance.linaPosition();
+						StartCoroutine (CraneManager.Instance.opuscHak (distance));
+					}else{
 					CraneManager.Instance.craneText ("Opuszczam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
 					StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba));
+					}
 				} else if (zapytanie.czasownik_podB) {
-					CraneManager.Instance.craneText ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
-					StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba * -1f));  
+					if(sprawdzLine(zapytanie.liczba*-1f)){
+						distance=CraneManager.Instance.linaPosition()-1f;
+						StartCoroutine (CraneManager.Instance.opuscHak (distance));
+					}else{
+						CraneManager.Instance.craneText ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+						StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba * -1f)); 
+					}
+					 
 				}
 			}
 		}

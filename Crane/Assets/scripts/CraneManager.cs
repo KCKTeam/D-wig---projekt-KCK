@@ -418,4 +418,12 @@ public class CraneManager : MonoBehaviour {
 		Text newText=Instantiate (playerText, TextContainer, worldPositionStays:false) as Text;
 		newText.text = text;
 	}
+
+	public float prowadnicaPosition(){
+		return prowadnica.localPosition.z;
+	}
+
+	public float linaPosition(){
+		return lina.localScale.z;
+	}
 }
