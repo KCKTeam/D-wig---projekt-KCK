@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class CraneManager : MonoBehaviour {
 
@@ -7,6 +9,7 @@ public class CraneManager : MonoBehaviour {
 	public Transform prowadnica;
 	public Transform hak;
 	public Transform lina;
+	float promienDzwigu=40f;
 	public float speed = 5f;
 	private static CraneManager instance;
 	public static CraneManager Instance{ get { return instance; } }
@@ -25,7 +28,7 @@ public class CraneManager : MonoBehaviour {
 		//StartCoroutine (opuscHak (-10f));
 	}
 
-	public IEnumerator rotation(float rotation){
+	public IEnumerator obroc(float rotation){
 		if (rotation > 0) {
 			float rotationSpeed=0.5f;
 			while (rotation > 0) {
@@ -43,16 +46,35 @@ public class CraneManager : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator Lift(GameObject obiekt){
-		yield return StartCoroutine (rotation(Angle(obiekt)));
+	public IEnumerator podniesObiekt(GameObject obiekt){
+		yield return StartCoroutine (obroc(Angle(obiekt)));
 		yield return StartCoroutine (przesunProwadnice (Distance (obiekt)));
 		yield return StartCoroutine (lineDown(obiekt));
-		StartCoroutine (lineUp ());
+		yield return StartCoroutine (lineUp ());
+	}
+
+	public IEnumerator podniesIodloz(GameObject obiekt){
+		yield return StartCoroutine (obroc(Angle(obiekt)));
+		yield return StartCoroutine (przesunProwadnice (Distance (obiekt)));
+		yield return StartCoroutine (lineDown(obiekt));
+		yield return StartCoroutine (lineUp ());
+		yield return new WaitForSeconds (2);
+		yield return StartCoroutine (putObjectDown ());
+		yield return lineUp ();
+	}
+
+	public IEnumerator odlozIpodnies(GameObject obiekt){
+		yield return StartCoroutine (putObjectDown ());
+		yield return lineUp ();
+		yield return StartCoroutine (obroc(Angle(obiekt)));
+		yield return StartCoroutine (przesunProwadnice (Distance (obiekt)));
+		yield return StartCoroutine (lineDown(obiekt));
+		yield return StartCoroutine (lineUp ());
 	}
 
 	public IEnumerator putDown(){
 		yield return StartCoroutine (putObjectDown());
-		StartCoroutine (lineUp ());
+		yield return StartCoroutine (lineUp ());
 
 	}
 	public IEnumerator putObjectDown(){
@@ -138,7 +160,38 @@ public class CraneManager : MonoBehaviour {
 		
 	float Angle(GameObject obiekt){
 		Vector2 vec1 = new Vector2 (transform.position.x, transform.position.z);
-		Vector2 vec2 = new Vector2 (obiekt.transform.position.x, obiekt.transform.position.z);
+		Vector2 vec2 = new Vector2 (obiekt.transform.GetChild(0).position.x, obiekt.transform.GetChild(0).position.z);
+		Vector2 vec3 = new Vector2 (hak.position.x, hak.position.z);
+		float x = vec2.x - vec1.x;
+		float y = vec2.y - vec1.y;
+		float tan = Mathf.Atan(y/x);
+		float angle = tan * (180 / Mathf.PI);
+
+		float x1 = vec3.x - vec1.x;
+		float y1 = vec3.y - vec1.y;
+		float tan1 = Mathf.Atan(y1/x1);
+		float angle1 = tan1 * (180 / Mathf.PI);
+
+		if (vec2.x < 0 && vec2.y > 0) {
+			angle = 180 + angle;
+		}
+		if (vec2.x < 0 && vec2.y < 0) {
+			angle = -180 + angle;
+		}
+		if (vec3.x < 0 && vec3.y > 0) {
+			angle1 = 180 + angle1;
+		}
+		if (vec3.x < 0 && vec3.y < 0) {
+			angle1 = -180 + angle1;
+		}
+
+		float angle2=angle - angle1;
+		return angle2*(-1);
+	}
+
+	float Angle(Vector2 lokalizacja){
+		Vector2 vec1 = new Vector2 (transform.position.x, transform.position.z);
+		Vector2 vec2 = new Vector2 (lokalizacja.x, lokalizacja.y);
 		Vector2 vec3 = new Vector2 (hak.position.x, hak.position.z);
 		float x = vec2.x - vec1.x;
 		float y = vec2.y - vec1.y;
@@ -186,8 +239,93 @@ public class CraneManager : MonoBehaviour {
 		}
 	}
 
-	float Distance(GameObject obiekt){
-		Vector2 vec1 = new Vector2 (obiekt.transform.position.x, obiekt.transform.position.z);
+	public IEnumerator polozTrzymanyObok(GameObject stojacy){
+		Vector2 lokalizacja=znajdzLokalizacje(trzymanyObiekt(), stojacy);
+		yield return StartCoroutine (obroc(Angle(lokalizacja)));
+		yield return StartCoroutine (przesunProwadnice (Distance (lokalizacja)));
+		yield return StartCoroutine (putObjectDown());
+		yield return StartCoroutine (lineUp ());
+	}
+
+	public IEnumerator polozObok(GameObject odkladany, GameObject stojacy){
+		yield return StartCoroutine (podniesObiekt (odkladany));
+
+		Vector2 lokalizacja=znajdzLokalizacje(odkladany, stojacy);
+		yield return StartCoroutine (obroc(Angle(lokalizacja)));
+		yield return StartCoroutine (przesunProwadnice (Distance (lokalizacja)));
+		yield return StartCoroutine (putObjectDown());
+		yield return StartCoroutine (lineUp ());
+	}
+
+	Vector2 znajdzLokalizacje(GameObject trzymany, GameObject docelowy){
+		Vector3 odkladanyWymiary = trzymany.GetComponent<BoxCollider> ().size;
+		Vector3 stojacyWymiary = docelowy.GetComponent<BoxCollider> ().size;
+		float odkladanyNajdluzsza=najdluzszaKrawedz(odkladanyWymiary);
+		float stojacyNajdluzsza=najdluzszaKrawedz(stojacyWymiary);
+		float odlegloscPostawienia = (odkladanyNajdluzsza + stojacyNajdluzsza) / 2+1f;
+
+		float odleglosc;
+		List <Vector2> mozliweLokalizacje=new List<Vector2>();
+		Vector2 vec1 = new Vector2 (docelowy.transform.position.x+odlegloscPostawienia, docelowy.transform.position.z);
+		Vector2 vec2 = Vector2.zero;
+		odleglosc = Vector2.Distance (vec1,vec2);
+		if (odleglosc < promienDzwigu) {
+			mozliweLokalizacje.Add (vec1);
+		};
+
+		vec1 = new Vector2 (docelowy.transform.position.x-odlegloscPostawienia, docelowy.transform.position.z);
+		odleglosc = Vector2.Distance (vec1,vec2);
+		if (odleglosc < promienDzwigu) {
+			mozliweLokalizacje.Add (vec1);
+		};
+
+		vec1 = new Vector2 (docelowy.transform.position.x, docelowy.transform.position.z+odlegloscPostawienia);
+		odleglosc = Vector2.Distance (vec1,vec2);
+		if (odleglosc < promienDzwigu) {
+			mozliweLokalizacje.Add (vec1);
+		};
+
+		vec1 = new Vector2 (docelowy.transform.position.x, docelowy.transform.position.z-odlegloscPostawienia);
+		odleglosc = Vector2.Distance (vec1,vec2);
+		if (odleglosc < promienDzwigu) {
+			mozliweLokalizacje.Add (vec1);
+		};
+
+		int lokalizacja=Random.Range (0,mozliweLokalizacje.Count);
+
+		return mozliweLokalizacje [lokalizacja];
+	}
+
+	float najdluzszaKrawedz(Vector3 wektor){
+		float najdluzsza = 0f;
+		if (najdluzsza < wektor.x)
+			najdluzsza = wektor.x;
+		if (najdluzsza < wektor.y)
+			najdluzsza = wektor.y;
+		if (najdluzsza < wektor.z)
+			najdluzsza = wektor.z;
+		return najdluzsza;
+	}
+
+	float Distance (GameObject obiekt){
+		Vector2 vec1 = new Vector2 (obiekt.transform.GetChild(0).position.x, obiekt.transform.GetChild(0).position.z);
+		Vector2 vec2 = new Vector2 (prowadnica.position.x, prowadnica.position.z);
+		float distance = Vector2.Distance (vec1, vec2);
+
+		if (vec2.y >= 0) {
+			if(vec1.y<=vec2.y)
+				distance=distance*(-1);
+		}
+		if (vec2.y < 0) {
+			if(vec1.y>=vec2.y)
+				distance=distance*(-1);
+		}
+
+		return distance;
+	}
+
+	float Distance (Vector2 lokalizacja){
+		Vector2 vec1 = new Vector2 (lokalizacja.x, lokalizacja.y);
 		Vector2 vec2 = new Vector2 (prowadnica.position.x, prowadnica.position.z);
 		float distance = Vector2.Distance (vec1, vec2);
 
@@ -214,5 +352,19 @@ public class CraneManager : MonoBehaviour {
 			return trzymany;
 		} else
 			return null;
+	}
+
+	public Text craneResponse;
+	public Text playerText;
+	public Transform TextContainer;
+
+	public void craneText(string text){
+		Text newText=Instantiate (craneResponse, TextContainer, worldPositionStays:false) as Text;
+		newText.text = text;
+	}
+
+	public void myText(string text){
+		Text newText=Instantiate (playerText, TextContainer, worldPositionStays:false) as Text;
+		newText.text = text;
 	}
 }

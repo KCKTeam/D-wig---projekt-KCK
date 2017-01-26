@@ -9,12 +9,14 @@ public class GetText : MonoBehaviour {
 	public Text craneResponse;
 	public Text playerText;
 	public Transform TextContainer;
+
 	//tablica przechowująca wszystkie obiekty ze sceny
 	public GameObject [] obiekty;
 
 	Slownik slownik=new Slownik();
 	AnalizaZapytania analiza;
 	Zapytanie nowe;
+
 //	string [] zaimki = {"obok", "lew","praw", "na", "przed", "za"};
 
 	InputField wejscie;
@@ -52,7 +54,7 @@ public class GetText : MonoBehaviour {
 			}
 		}
 	}
-		
+
 	public void craneText(string text){
 		Text newText=Instantiate (craneResponse, TextContainer, worldPositionStays:false) as Text;
 		newText.text = text;

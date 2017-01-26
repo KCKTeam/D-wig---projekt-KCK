@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
+
 public class AnalizaZapytania : MonoBehaviour{
 	Zapytanie zapytanie;
 	Slownik slownik;
@@ -80,9 +81,6 @@ public class AnalizaZapytania : MonoBehaviour{
 	public void znajdzObiekty(){
 		podmienKoloryRodzaje ();
 
-		//zapytanie.trzymaB=CraneManager.Instance.checkJoint ();
-		zapytanie.trzymaB=false;
-
 		List <int> pozostaleIndexy=new List<int>(zapytanie.obiekty_rodzaj);
 		findedObjects=new GameObject[zapytanie.obiekty_rodzaj.Count];
 
@@ -134,20 +132,14 @@ public class AnalizaZapytania : MonoBehaviour{
 		int g=0;
 		int k=dopytania.Count;
 		while (k > 0) {
-			
-			Debug.Log ("Ilość obiektów: "+findedObjects.Length);
-
 			findedObjects[dopytania[g].index]=znajdzNaScenie (dopytania[g].rodzaj, dopytania[g].index);
 
 			if (findedObjects [dopytania [g].index] != null) {
 				dopytania.RemoveAt (g);
-				Debug.Log ("Usuwam znaleziony");
 			} else {
 				g++;
 			}
-
 			k--;
-
 		}
 	}
 
@@ -156,7 +148,6 @@ public class AnalizaZapytania : MonoBehaviour{
 		for (int i = 0; i < obiekty.Length; i++) {
 			if(obiekty[i].GetComponent<objectProperties>().kolor.Contains(k)&&obiekty[i].GetComponent<objectProperties>().rodzaj.Contains(r)){
 				znaleziony = obiekty [i];
-				Debug.Log ("Znalazłem " + obiekty[i].GetComponent<objectProperties>().kolor + obiekty[i].GetComponent<objectProperties>().rodzaj);
 			}
 		}
 		return znaleziony;
@@ -174,10 +165,8 @@ public class AnalizaZapytania : MonoBehaviour{
 		}
 
 		if (takieSame > 1) { //jeśli więcej niż jeden to dodaj rodzaj do dopytania
-			Debug.Log ("Więcej niż jeden tego rodzaju");
 			return null;
 		} else { //jeśli nie to znaleziono obiekt
-			Debug.Log ("Znaleziony " + znaleziony.GetComponent<objectProperties> ().kolor + znaleziony.GetComponent<objectProperties> ().rodzaj);
 			return znaleziony;
 		}
 
@@ -190,17 +179,16 @@ public class AnalizaZapytania : MonoBehaviour{
 		//dopytania = doSprawdzenia; //lista dopytań
 
 		if (zapytanie.twierdzenieB) {
-			Debug.Log ("Wybieram obiekt losowo");
+			CraneManager.Instance.craneText ("Wybieram obiekt losowo");
 			findedObjects[dopytania[0].index]=wybierzObiektLosowo (dopytania[0].rodzaj);
 			dopytania.RemoveAt (0);
 			zapytanie.twierdzenieB = false;
 			if (dopytania.Count > 0)
 				dopytaj("");
 		} else if (zapytanie.przeczenieB) {
-			Debug.Log ("Podaj kolor.");
+			CraneManager.Instance.craneText ("Podaj kolor.");
 			zapytanie.przeczenieB = false;
 		} else if (zapytanie.kolorB) {
-			Debug.Log ("Wybrany kolor: " + dopytanie[zapytanie.kolor]);
 			findedObjects[dopytania[0].index]=znajdzNaScenie ( dopytania[0].rodzaj, dopytanie[zapytanie.kolor]);
 			dopytania.RemoveAt (0);
 			zapytanie.kolorB = false;
@@ -208,8 +196,8 @@ public class AnalizaZapytania : MonoBehaviour{
 				dopytaj("");
 		}
 		else {
-			Debug.Log ("Znalazłem więcej niż jeden obiekt rodzaju: " + dopytania [0].rodzaj);
-			Debug.Log ("Wybrać obiekt losowo?");
+			CraneManager.Instance.craneText ("Znalazłem więcej niż jeden obiekt rodzaju: " + dopytania [0].rodzaj);
+			CraneManager.Instance.craneText ("Wybrać obiekt losowo?");
 		}
 
 		//jeśli dopytał o wszystko to musi uruchomić znajdowanie polecenia z tego miejsca
@@ -375,9 +363,7 @@ public class AnalizaZapytania : MonoBehaviour{
 	}
 
 	public void znajdzPolecenie(){
-		Debug.Log ("Polecenie");
 		zapytanie.trzymaB = CraneManager.Instance.checkJoint ();
-		zapytanie.trzymaB = false;
 
 		for (int i = 0; i < findedObjects.Length; i++) {
 			Debug.Log (findedObjects[i].GetComponent<objectProperties> ().kolor + findedObjects[i].GetComponent<objectProperties> ().rodzaj);
@@ -391,31 +377,34 @@ public class AnalizaZapytania : MonoBehaviour{
 				// hak w tył
 				if (substrings [zapytanie.kierunek].Contains ("tył")) {
 					distance *= -1;
-					Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
+					CraneManager.Instance.craneText ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w tył");
 					StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba * -1f));
 				}
 				// hak w przód
 				else if (substrings [zapytanie.kierunek].Contains ("przód") || substrings [zapytanie.kierunek].Contains ("przod")) {
-					Debug.Log ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
+					CraneManager.Instance.craneText ("Przesuwam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki] + " w przód");
 					StartCoroutine (CraneManager.Instance.przesunProwadnice (zapytanie.liczba)); //funkcja dźwigu
 				}
 				// obracanie dźwigu np. Obróć dźwig o 50 stopni w lewo
 				else if (zapytanie.obrocB) {
 					if (substrings [zapytanie.kierunek].Contains ("lew")) {
 						distance = distance * -1f;
+						CraneManager.Instance.craneText ("Obracam o " + distance + " stopni w lewo");
+					} else {
+						CraneManager.Instance.craneText ("Obracam o "+distance+" stopni w prawo");
 					}
-					StartCoroutine (CraneManager.Instance.rotation (distance));
+
+					StartCoroutine (CraneManager.Instance.obroc (distance));
 				}
 			}
 
 			// opuszczanie liny
 			else if (zapytanie.czasownik_opuB || zapytanie.czasownik_podB) {
-				Debug.Log ("Weszłem");
 				if (zapytanie.czasownik_opuB) {
-					Debug.Log ("Opuszczam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+					CraneManager.Instance.craneText ("Opuszczam hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
 					StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba));
 				} else if (zapytanie.czasownik_podB) {
-					Debug.Log ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
+					CraneManager.Instance.craneText ("Podnoszę hak o " + zapytanie.liczba + " " + substrings [zapytanie.jednostki]);
 					StartCoroutine (CraneManager.Instance.opuscHak (zapytanie.liczba * -1f));  
 				}
 			}
@@ -428,16 +417,18 @@ public class AnalizaZapytania : MonoBehaviour{
 			if (zapytanie.czasownik_podB && zapytanie.czasownik_opuB && !zapytanie.sektorB) {
 				//0 przdmiotów np. Podnieś połóż
 				if (zapytanie.obiekty_rodzaj.Count == 0) {
-					Debug.Log ("Nie podałeś przedmiotu");
+					CraneManager.Instance.craneText ("Nie podałeś przedmiotu");
 				}
 				//1 przedmiot np. Podnieś samochód i go odłóż
 				else if (zapytanie.obiekty_rodzaj.Count == 1) {
-					Debug.Log ("Podnoszę i opuszczam przedmiot");
+					CraneManager.Instance.craneText ("Podnoszę i opuszczam "+findedObjects[0].GetComponent<objectProperties>().kolor+" "+findedObjects[0].GetComponent<objectProperties>().rodzaj);
+					StartCoroutine (CraneManager.Instance.podniesIodloz(findedObjects[0]));
 					// podnieś(obiekt); połóż(obiekt);
 				}
 				//2 przedmioty np. Podnieś samochód i połóż go obok skrzynki
 				else if (zapytanie.obiekty_rodzaj.Count == 2) {
-					Debug.Log ("Podnoszę obiekt A i kładę obok B");
+					CraneManager.Instance.craneText ("Podnoszę "+findedObjects[0].GetComponent<objectProperties>().kolor+" "+findedObjects[0].GetComponent<objectProperties>().rodzaj+" i kładę obok wskazanego obiektu");
+					StartCoroutine (CraneManager.Instance.polozObok(findedObjects[0],findedObjects[1]));
 					//podnieś(obiekt1); połóżObok(obiekt1,obiekt2);
 				}
 			}
@@ -445,7 +436,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			else if (zapytanie.czasownik_podB && zapytanie.czasownik_opuB && zapytanie.sektorB) {
 				//0 przdmiotów np. Podnieś połóż B5
 				if (zapytanie.obiekty_rodzaj.Count == 0) {
-					Debug.Log ("Nie podałeś przedmiotu");
+					CraneManager.Instance.craneText ("Nie podałeś przedmiotu");
 				}
 				//1 przedmiot np. Podnieś czerwony samochód i połóż go w sektorze A3
 				else if (zapytanie.obiekty_rodzaj.Count == 1) {
@@ -454,23 +445,24 @@ public class AnalizaZapytania : MonoBehaviour{
 				}
 				//2 przedmioty np. Podnieś samochód i połóż go w sektorze a3 obok skrzynki
 				else if (zapytanie.obiekty_rodzaj.Count >= 2) {
-					Debug.Log ("Ta operacja jest dla mnie za trudna");
+					CraneManager.Instance.craneText ("Ta operacja jest dla mnie za trudna");
 				}
 			}
 			//1 czasowniki podnoszenia, bez sektora
 			else if (zapytanie.czasownik_podB && !zapytanie.sektorB) {
 				//0 przdmiotów np. Podnieś
 				if (zapytanie.obiekty_rodzaj.Count == 0) {
-					Debug.Log ("Nie podałeś przedmiotu");
+					CraneManager.Instance.craneText ("Nie podałeś przedmiotu");
 				}
 				//1 przedmiot np. Podnieś zielony samochód
 				else if (zapytanie.obiekty_rodzaj.Count == 1) {
-					Debug.Log ("Podnosz obiekt");
+					CraneManager.Instance.craneText ("Podnoszę "+findedObjects[0].GetComponent<objectProperties>().kolor+" "+findedObjects[0].GetComponent<objectProperties>().rodzaj);
+					StartCoroutine (CraneManager.Instance.podniesObiekt(findedObjects[0]));
 					// podnieś(obiekt);
 				}
 				//2 przedmioty np. Podnieś zielony samochód leżący obok czarnej skrzynki
 				else if (zapytanie.obiekty_rodzaj.Count <= 2) {
-					Debug.Log ("Nie mam takiej funkcji");
+					CraneManager.Instance.craneText ("Nie mam takiej funkcji");
 				}
 			}
 			//1 czasowniki podnoszenia, z sektorem np. Podnieś cokolwiek z sektora A5
@@ -490,11 +482,17 @@ public class AnalizaZapytania : MonoBehaviour{
 			if (zapytanie.czasownik_podB && zapytanie.czasownik_opuB && !zapytanie.sektorB) {
 				//0 przdmiotów
 				if (zapytanie.obiekty_rodzaj.Count == 0) {
-					Debug.Log ("Nie mam takiej funkcji");
+					CraneManager.Instance.craneText ("Nie mam takiej funkcji");
 				}
 				//1,2 przedmioty np. połóż trzmany obiekt i podnieś samochód
 				else if (zapytanie.obiekty_rodzaj.Count == 1 || zapytanie.obiekty_rodzaj.Count == 2) {
-					Debug.Log ("Odkładam trzymany przedmiot A i podnosze B");
+					if (findedObjects.Length == 1) {
+						CraneManager.Instance.craneText ("Odkładam "+CraneManager.Instance.trzymanyObiekt().GetComponent<objectProperties>().kolor+" "+CraneManager.Instance.trzymanyObiekt().GetComponent<objectProperties>().rodzaj+" i podnoszę "+findedObjects[0].GetComponent<objectProperties>().kolor+" "+findedObjects[0].GetComponent<objectProperties>().rodzaj);
+						StartCoroutine (CraneManager.Instance.odlozIpodnies(findedObjects[0]));
+					} else if (findedObjects.Length == 2) {
+						CraneManager.Instance.craneText ("Odkładam "+findedObjects[0].GetComponent<objectProperties>().kolor+" "+findedObjects[0].GetComponent<objectProperties>().rodzaj+" i podnoszę "+findedObjects[1].GetComponent<objectProperties>().kolor+" "+findedObjects[1].GetComponent<objectProperties>().rodzaj);
+						StartCoroutine (CraneManager.Instance.odlozIpodnies(findedObjects[1]));
+					}
 					// połóż(); podnieś(obiekt)
 				}
 			}
@@ -511,21 +509,25 @@ public class AnalizaZapytania : MonoBehaviour{
 					// połóżwSektorze(sektor); podnieś(obiekt);
 				}
 			}
+			else if (zapytanie.czasownik_opuB && !zapytanie.sektorB && zapytanie.obiekty_rodzaj.Count == 1) {
+				StartCoroutine (CraneManager.Instance.polozTrzymanyObok (findedObjects[0]));
+				CraneManager.Instance.craneText ("Odkładam trzymany przedmiot obok podanego");
+				//połóżObok();
+			}
 			//1 czasowniki opuszczania, bez sektora np. Połóż 
 			else if (zapytanie.czasownik_opuB && !zapytanie.sektorB) {
-				Debug.Log ("Odkładam trzymany przedmiot");
-				//połóż();
+				CraneManager.Instance.craneText ("Odkładam "+CraneManager.Instance.trzymanyObiekt().GetComponent<objectProperties>().kolor+" "+CraneManager.Instance.trzymanyObiekt().GetComponent<objectProperties>().rodzaj);
+				StartCoroutine (CraneManager.Instance.putDown());
 			}
 			//1 czasowniki opuszczania, z sektorem np. Odłóż skrzynkę w sektorze C3
 			else if (zapytanie.czasownik_opuB && zapytanie.sektorB) {
+				
 				Debug.Log ("Odkładam trzymany przedmiot w sektorze");
 				//połóżWSektorze(sektor);
-			}
-			else if (zapytanie.czasownik_opuB && !zapytanie.sektorB && zapytanie.obiekty_rodzaj.Count == 1) {
-				Debug.Log ("Odkładam trzymany przedmiot obok podanego");
-				//połóżObok();
 			}
 		}
 
 	}
+
+
 }
