@@ -312,7 +312,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			}
 
 			//znajdowanie sektora
-			if (Regex.IsMatch (substring, @"^[a-h]{1}[0-9]{1}$")) {
+			if (Regex.IsMatch (substring, @"^[a-j]{1}[0-9]{1}$")) {
 				zapytanie.sektory.Add (index);
 				Debug.Log ("sektor " + substrings [index]);
 			}
@@ -344,7 +344,6 @@ public class AnalizaZapytania : MonoBehaviour{
 			//znajdowanie sektorów
 			for (int i = 0; i < slownik.sektor.Length; i++) {
 				if (substring.Contains (slownik.sektor[i])) {
-					zapytanie.sektory.Add (index);
 					zapytanie.sektorB = true;
 				}
 			}
@@ -440,7 +439,14 @@ public class AnalizaZapytania : MonoBehaviour{
 				}
 				//1 przedmiot np. Podnieś czerwony samochód i połóż go w sektorze A3
 				else if (zapytanie.obiekty_rodzaj.Count == 1) {
-					Debug.Log ("Podnosz i opuszczam przedmiot w sektorze");
+					int indexSektora = 0;
+					if (zapytanie.sektory.Count == 1) {
+						indexSektora = zapytanie.sektory [0];
+					} else if (zapytanie.sektory.Count == 2) {
+						indexSektora = zapytanie.sektory [1];
+					}
+					CraneManager.Instance.craneText ("Podnoszę " + findedObjects [0].GetComponent<objectProperties> ().kolor + " " + findedObjects [0].GetComponent<objectProperties> ().rodzaj);
+					StartCoroutine (CraneManager.Instance.podniesIpolozWsektorze (findedObjects[0],substrings [indexSektora]));
 					// podnieś(obiekt); połóżWSektorze(sektor)
 				}
 				//2 przedmioty np. Podnieś samochód i połóż go w sektorze a3 obok skrzynki
@@ -469,7 +475,7 @@ public class AnalizaZapytania : MonoBehaviour{
 			else if (zapytanie.czasownik_podB && zapytanie.sektorB) {
 				//0, 1 przdmiot
 				if (zapytanie.obiekty_rodzaj.Count == 0 || zapytanie.obiekty_rodzaj.Count == 1) {
-					Debug.Log ("Podnosze obiekt z podanego sektora");
+					StartCoroutine (CraneManager.Instance.podniesZsektora(substrings[zapytanie.sektory[0]]));
 					// podnieśZSektora(sektor);
 				}
 			}
@@ -506,6 +512,11 @@ public class AnalizaZapytania : MonoBehaviour{
 				//1,2 przedmioty np. Odłóż co trzymasz w sektorze B4 i podnieś samochód
 				else if (zapytanie.obiekty_rodzaj.Count == 1 || zapytanie.obiekty_rodzaj.Count == 2) {
 					Debug.Log ("Odkładam trzymany przedmiot A w sektorze i podnosze B");
+					if(zapytanie.obiekty_rodzaj.Count == 1){
+						StartCoroutine (CraneManager.Instance.polozWsektorzeIpodnies(substrings[zapytanie.sektory[0]],findedObjects[0]));
+					}else if(zapytanie.obiekty_rodzaj.Count == 2){
+						StartCoroutine (CraneManager.Instance.polozWsektorzeIpodnies(substrings[zapytanie.sektory[0]],findedObjects[1]));
+					}
 					// połóżwSektorze(sektor); podnieś(obiekt);
 				}
 			}
@@ -521,8 +532,14 @@ public class AnalizaZapytania : MonoBehaviour{
 			}
 			//1 czasowniki opuszczania, z sektorem np. Odłóż skrzynkę w sektorze C3
 			else if (zapytanie.czasownik_opuB && zapytanie.sektorB) {
-				
 				Debug.Log ("Odkładam trzymany przedmiot w sektorze");
+				int indexSektora = 0;
+				if (zapytanie.sektory.Count == 1) {
+					indexSektora = zapytanie.sektory [0];
+				} else if (zapytanie.sektory.Count == 2) {
+					indexSektora = zapytanie.sektory [1];
+				}
+				StartCoroutine (CraneManager.Instance.polozWsektorze (substrings [indexSektora]));
 				//połóżWSektorze(sektor);
 			}
 		}

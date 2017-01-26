@@ -54,6 +54,7 @@
      <Compile Include="Assets\scripts\Production.cs" />
      <Compile Include="Assets\scripts\Slownik.cs" />
      <Compile Include="Assets\scripts\Zapytanie.cs" />
+     <Compile Include="Assets\scripts\detekcjaObiektu.cs" />
      <Compile Include="Assets\scripts\hakPos.cs" />
      <Compile Include="Assets\scripts\objectProperties.cs" />
  <Reference Include="UnityEngine.UI">
